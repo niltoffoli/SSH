@@ -129,6 +129,7 @@
     <None Include="rest.ico" />
     <None Include="Gears-icon.png" />
     <None Include="death2-16.png" />
+    <None Include="pg.ico" />
     <Content Include="ssh.ico" />
   </ItemGroup>
   <ItemGroup>

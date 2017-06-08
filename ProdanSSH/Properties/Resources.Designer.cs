@@ -103,6 +103,16 @@ namespace ProdanSSH.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap pg {
+            get {
+                object obj = ResourceManager.GetObject("pg", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap putty {
             get {
                 object obj = ResourceManager.GetObject("putty", resourceCulture);

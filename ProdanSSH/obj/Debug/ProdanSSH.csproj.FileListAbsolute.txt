@@ -9,3 +9,14 @@ C:\Users\Nilton\documents\visual studio 2012\Projects\ProdanSSH\ProdanSSH\obj\De
 C:\Users\Nilton\documents\visual studio 2012\Projects\ProdanSSH\ProdanSSH\obj\Debug\ProdanSSH.exe
 C:\Users\Nilton\documents\visual studio 2012\Projects\ProdanSSH\ProdanSSH\obj\Debug\ProdanSSH.pdb
 C:\Users\Nilton\documents\visual studio 2012\Projects\ProdanSSH\ProdanSSH\obj\Debug\ProdanSSH.csprojResolveAssemblyReference.cache
+C:\Users\Nilton\Documents\GitHub\ProdanSSH\ProdanSSH\bin\Debug\ProdanSSH.exe.config
+C:\Users\Nilton\Documents\GitHub\ProdanSSH\ProdanSSH\obj\Debug\ProdanSSH.exe
+C:\Users\Nilton\Documents\GitHub\ProdanSSH\ProdanSSH\obj\Debug\ProdanSSH.pdb
+C:\Users\Nilton\Documents\GitHub\ProdanSSH\ProdanSSH\bin\Debug\ProdanSSH.exe
+C:\Users\Nilton\Documents\GitHub\ProdanSSH\ProdanSSH\bin\Debug\ProdanSSH.pdb
+C:\Users\Nilton\Documents\GitHub\ProdanSSH\ProdanSSH\bin\Debug\Renci.SshNet.dll
+C:\Users\Nilton\Documents\GitHub\ProdanSSH\ProdanSSH\bin\Debug\Renci.SshNet.xml
+C:\Users\Nilton\Documents\GitHub\ProdanSSH\ProdanSSH\obj\Debug\ProdanSSH.csprojResolveAssemblyReference.cache
+C:\Users\Nilton\Documents\GitHub\ProdanSSH\ProdanSSH\obj\Debug\ProdanSSH.Properties.Resources.resources
+C:\Users\Nilton\Documents\GitHub\ProdanSSH\ProdanSSH\obj\Debug\ProdanSSH.csproj.GenerateResource.Cache
+C:\Users\Nilton\Documents\GitHub\ProdanSSH\ProdanSSH\obj\Debug\ProdanSSH.FrmSSH.resources

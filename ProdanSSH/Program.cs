@@ -25,11 +25,11 @@ namespace ProdanSSH
             Application.SetCompatibleTextRenderingDefault(false);
             if (args.Length != 0)
             {
-                Application.Run(new Form1(args[0]));
+                Application.Run(new FrmSSH(args[0]));
             }
             else
             {
-                Application.Run(new Form1("normalState"));
+                Application.Run(new FrmSSH("normalState"));
             }
             GC.KeepAlive(m); // registra a mutex 
         }

@@ -1,6 +1,6 @@
 ﻿namespace ProdanSSH
 {
-    partial class Form1
+    partial class FrmSSH
     {
         /// <summary>
         /// Required designer variable.
@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmSSH));
             this.textIP = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
@@ -43,14 +43,17 @@
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.rtbOutput = new System.Windows.Forms.RichTextBox();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.contextProcKill = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.toolStripTextBox1 = new System.Windows.Forms.ToolStripTextBox();
+            this.btnPgReset = new System.Windows.Forms.Button();
             this.btnShootToKill = new System.Windows.Forms.Button();
             this.btnListproc = new System.Windows.Forms.Button();
             this.btnRestart = new System.Windows.Forms.Button();
             this.btnLimpa = new System.Windows.Forms.Button();
             this.btnVerifica = new System.Windows.Forms.Button();
             this.btnPutty = new System.Windows.Forms.Button();
-            this.contextProcKill = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.toolStripTextBox1 = new System.Windows.Forms.ToolStripTextBox();
+            this.lblHelp = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.contextBandeja.SuspendLayout();
             this.contextProcKill.SuspendLayout();
@@ -99,7 +102,7 @@
             this.textUser.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.textUser.Name = "textUser";
             this.textUser.Size = new System.Drawing.Size(100, 20);
-            this.textUser.TabIndex = 3;
+            this.textUser.TabIndex = 2;
             // 
             // textPass
             // 
@@ -108,7 +111,7 @@
             this.textPass.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.textPass.Name = "textPass";
             this.textPass.Size = new System.Drawing.Size(104, 20);
-            this.textPass.TabIndex = 4;
+            this.textPass.TabIndex = 3;
             // 
             // groupBox1
             // 
@@ -123,7 +126,7 @@
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.groupBox1.Size = new System.Drawing.Size(347, 79);
-            this.groupBox1.TabIndex = 8;
+            this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             // 
             // tray
@@ -155,7 +158,7 @@
             this.checkBox1.Location = new System.Drawing.Point(479, 344);
             this.checkBox1.Name = "checkBox1";
             this.checkBox1.Size = new System.Drawing.Size(174, 17);
-            this.checkBox1.TabIndex = 10;
+            this.checkBox1.TabIndex = 8;
             this.checkBox1.Text = "Verificar horário na inicialização";
             this.checkBox1.UseVisualStyleBackColor = true;
             this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
@@ -171,7 +174,7 @@
             this.rtbOutput.Name = "rtbOutput";
             this.rtbOutput.ReadOnly = true;
             this.rtbOutput.Size = new System.Drawing.Size(645, 242);
-            this.rtbOutput.TabIndex = 9;
+            this.rtbOutput.TabIndex = 0;
             this.rtbOutput.TabStop = false;
             this.rtbOutput.Text = "";
             // 
@@ -184,93 +187,6 @@
             this.progressBar1.Size = new System.Drawing.Size(645, 10);
             this.progressBar1.TabIndex = 13;
             this.progressBar1.Visible = false;
-            // 
-            // btnShootToKill
-            // 
-            this.btnShootToKill.BackColor = System.Drawing.SystemColors.Control;
-            this.btnShootToKill.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnShootToKill.Image = global::ProdanSSH.Properties.Resources.death2_16;
-            this.btnShootToKill.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnShootToKill.Location = new System.Drawing.Point(659, 156);
-            this.btnShootToKill.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.btnShootToKill.Name = "btnShootToKill";
-            this.btnShootToKill.Size = new System.Drawing.Size(118, 25);
-            this.btnShootToKill.TabIndex = 16;
-            this.btnShootToKill.Text = "Matar Processo";
-            this.btnShootToKill.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.btnShootToKill.UseVisualStyleBackColor = false;
-            this.btnShootToKill.Click += new System.EventHandler(this.btnShootToKill_Click);
-            // 
-            // btnListproc
-            // 
-            this.btnListproc.BackColor = System.Drawing.SystemColors.Control;
-            this.btnListproc.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnListproc.Image = global::ProdanSSH.Properties.Resources.Gears_icon;
-            this.btnListproc.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnListproc.Location = new System.Drawing.Point(659, 123);
-            this.btnListproc.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.btnListproc.Name = "btnListproc";
-            this.btnListproc.Size = new System.Drawing.Size(118, 25);
-            this.btnListproc.TabIndex = 15;
-            this.btnListproc.Text = "Listar Processos";
-            this.btnListproc.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.btnListproc.UseVisualStyleBackColor = false;
-            this.btnListproc.Click += new System.EventHandler(this.btnListproc_Click);
-            // 
-            // btnRestart
-            // 
-            this.btnRestart.BackColor = System.Drawing.SystemColors.Control;
-            this.btnRestart.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnRestart.Image = global::ProdanSSH.Properties.Resources.rest;
-            this.btnRestart.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnRestart.Location = new System.Drawing.Point(661, 307);
-            this.btnRestart.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.btnRestart.Name = "btnRestart";
-            this.btnRestart.Size = new System.Drawing.Size(118, 25);
-            this.btnRestart.TabIndex = 14;
-            this.btnRestart.Text = "Reiniciar Serv.";
-            this.btnRestart.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.btnRestart.UseVisualStyleBackColor = false;
-            this.btnRestart.Click += new System.EventHandler(this.btnRestart_Click);
-            // 
-            // btnLimpa
-            // 
-            this.btnLimpa.Image = global::ProdanSSH.Properties.Resources._1492562768_edit_clear;
-            this.btnLimpa.Location = new System.Drawing.Point(80, 338);
-            this.btnLimpa.Name = "btnLimpa";
-            this.btnLimpa.Size = new System.Drawing.Size(27, 26);
-            this.btnLimpa.TabIndex = 12;
-            this.btnLimpa.UseVisualStyleBackColor = true;
-            this.btnLimpa.Click += new System.EventHandler(this.btnLimpa_Click);
-            // 
-            // btnVerifica
-            // 
-            this.btnVerifica.BackColor = System.Drawing.SystemColors.Control;
-            this.btnVerifica.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnVerifica.Image = global::ProdanSSH.Properties.Resources.conn;
-            this.btnVerifica.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnVerifica.Location = new System.Drawing.Point(659, 90);
-            this.btnVerifica.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.btnVerifica.Name = "btnVerifica";
-            this.btnVerifica.Size = new System.Drawing.Size(118, 25);
-            this.btnVerifica.TabIndex = 5;
-            this.btnVerifica.Text = "Verificar Horario";
-            this.btnVerifica.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.btnVerifica.UseVisualStyleBackColor = false;
-            this.btnVerifica.Click += new System.EventHandler(this.btnVerifica_Click);
-            // 
-            // btnPutty
-            // 
-            this.btnPutty.Image = global::ProdanSSH.Properties.Resources.putty;
-            this.btnPutty.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnPutty.Location = new System.Drawing.Point(8, 338);
-            this.btnPutty.Name = "btnPutty";
-            this.btnPutty.Size = new System.Drawing.Size(66, 26);
-            this.btnPutty.TabIndex = 11;
-            this.btnPutty.Text = "PuTTY";
-            this.btnPutty.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.btnPutty.UseVisualStyleBackColor = true;
-            this.btnPutty.Click += new System.EventHandler(this.btnPutty_Click);
             // 
             // contextProcKill
             // 
@@ -288,13 +204,139 @@
             this.toolStripTextBox1.ToolTipText = "Numero do Processo";
             this.toolStripTextBox1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.toolStripTextBox1_KeyDown);
             // 
-            // Form1
+            // btnPgReset
+            // 
+            this.btnPgReset.BackColor = System.Drawing.SystemColors.Control;
+            this.btnPgReset.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnPgReset.Image = global::ProdanSSH.Properties.Resources.pg;
+            this.btnPgReset.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnPgReset.Location = new System.Drawing.Point(659, 189);
+            this.btnPgReset.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.btnPgReset.Name = "btnPgReset";
+            this.btnPgReset.Size = new System.Drawing.Size(128, 25);
+            this.btnPgReset.TabIndex = 14;
+            this.btnPgReset.Text = "Reiniciar Postgres";
+            this.btnPgReset.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.btnPgReset.UseVisualStyleBackColor = false;
+            this.btnPgReset.Click += new System.EventHandler(this.btnPgReset_Click);
+            // 
+            // btnShootToKill
+            // 
+            this.btnShootToKill.BackColor = System.Drawing.SystemColors.Control;
+            this.btnShootToKill.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnShootToKill.Image = global::ProdanSSH.Properties.Resources.death2_16;
+            this.btnShootToKill.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnShootToKill.Location = new System.Drawing.Point(659, 156);
+            this.btnShootToKill.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.btnShootToKill.Name = "btnShootToKill";
+            this.btnShootToKill.Size = new System.Drawing.Size(128, 25);
+            this.btnShootToKill.TabIndex = 6;
+            this.btnShootToKill.Text = "Matar Processo";
+            this.btnShootToKill.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.btnShootToKill.UseVisualStyleBackColor = false;
+            this.btnShootToKill.Click += new System.EventHandler(this.btnShootToKill_Click);
+            // 
+            // btnListproc
+            // 
+            this.btnListproc.BackColor = System.Drawing.SystemColors.Control;
+            this.btnListproc.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnListproc.Image = global::ProdanSSH.Properties.Resources.Gears_icon;
+            this.btnListproc.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnListproc.Location = new System.Drawing.Point(659, 123);
+            this.btnListproc.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.btnListproc.Name = "btnListproc";
+            this.btnListproc.Size = new System.Drawing.Size(128, 25);
+            this.btnListproc.TabIndex = 5;
+            this.btnListproc.Text = "Listar Processos";
+            this.btnListproc.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.btnListproc.UseVisualStyleBackColor = false;
+            this.btnListproc.Click += new System.EventHandler(this.btnListproc_Click);
+            // 
+            // btnRestart
+            // 
+            this.btnRestart.BackColor = System.Drawing.SystemColors.Control;
+            this.btnRestart.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnRestart.Image = global::ProdanSSH.Properties.Resources.rest;
+            this.btnRestart.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnRestart.Location = new System.Drawing.Point(659, 307);
+            this.btnRestart.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.btnRestart.Name = "btnRestart";
+            this.btnRestart.Size = new System.Drawing.Size(128, 25);
+            this.btnRestart.TabIndex = 7;
+            this.btnRestart.Text = "Reiniciar Servidor";
+            this.btnRestart.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.btnRestart.UseVisualStyleBackColor = false;
+            this.btnRestart.Click += new System.EventHandler(this.btnRestart_Click);
+            // 
+            // btnLimpa
+            // 
+            this.btnLimpa.Image = global::ProdanSSH.Properties.Resources._1492562768_edit_clear;
+            this.btnLimpa.Location = new System.Drawing.Point(80, 338);
+            this.btnLimpa.Name = "btnLimpa";
+            this.btnLimpa.Size = new System.Drawing.Size(27, 26);
+            this.btnLimpa.TabIndex = 9;
+            this.btnLimpa.UseVisualStyleBackColor = true;
+            this.btnLimpa.Click += new System.EventHandler(this.btnLimpa_Click);
+            // 
+            // btnVerifica
+            // 
+            this.btnVerifica.BackColor = System.Drawing.SystemColors.Control;
+            this.btnVerifica.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnVerifica.Image = global::ProdanSSH.Properties.Resources.conn;
+            this.btnVerifica.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnVerifica.Location = new System.Drawing.Point(659, 90);
+            this.btnVerifica.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.btnVerifica.Name = "btnVerifica";
+            this.btnVerifica.Size = new System.Drawing.Size(128, 25);
+            this.btnVerifica.TabIndex = 4;
+            this.btnVerifica.Text = "Verificar Horario";
+            this.btnVerifica.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.btnVerifica.UseVisualStyleBackColor = false;
+            this.btnVerifica.Click += new System.EventHandler(this.btnVerifica_Click);
+            // 
+            // btnPutty
+            // 
+            this.btnPutty.Image = global::ProdanSSH.Properties.Resources.putty;
+            this.btnPutty.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnPutty.Location = new System.Drawing.Point(8, 338);
+            this.btnPutty.Name = "btnPutty";
+            this.btnPutty.Size = new System.Drawing.Size(66, 26);
+            this.btnPutty.TabIndex = 10;
+            this.btnPutty.Text = "PuTTY";
+            this.btnPutty.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.btnPutty.UseVisualStyleBackColor = true;
+            this.btnPutty.Click += new System.EventHandler(this.btnPutty_Click);
+            // 
+            // lblHelp
+            // 
+            this.lblHelp.AutoSize = true;
+            this.lblHelp.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblHelp.Location = new System.Drawing.Point(750, 370);
+            this.lblHelp.Name = "lblHelp";
+            this.lblHelp.Size = new System.Drawing.Size(45, 12);
+            this.lblHelp.TabIndex = 15;
+            this.lblHelp.Text = "F1: Ajuda";
+            // 
+            // button1
+            // 
+            this.button1.Image = global::ProdanSSH.Properties.Resources._1492562768_edit_clear;
+            this.button1.Location = new System.Drawing.Point(264, 338);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(27, 26);
+            this.button1.TabIndex = 16;
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // FrmSSH
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Snow;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.ClientSize = new System.Drawing.Size(789, 384);
+            this.ClientSize = new System.Drawing.Size(799, 384);
+            this.Controls.Add(this.button1);
+            this.Controls.Add(this.lblHelp);
+            this.Controls.Add(this.btnPgReset);
             this.Controls.Add(this.btnShootToKill);
             this.Controls.Add(this.btnListproc);
             this.Controls.Add(this.btnRestart);
@@ -309,8 +351,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.MaximizeBox = false;
-            this.MinimizeBox = false;
-            this.Name = "Form1";
+            this.Name = "FrmSSH";
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.Text = "ProdanSSH";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
@@ -347,6 +388,9 @@
         private System.Windows.Forms.Button btnShootToKill;
         private System.Windows.Forms.ContextMenuStrip contextProcKill;
         private System.Windows.Forms.ToolStripTextBox toolStripTextBox1;
+        private System.Windows.Forms.Button btnPgReset;
+        private System.Windows.Forms.Label lblHelp;
+        private System.Windows.Forms.Button button1;
     }
 }
 

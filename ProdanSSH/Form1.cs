@@ -14,14 +14,16 @@ using System.IO;
 using System.Net;
 using System.Diagnostics;
 using System.Threading;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace ProdanSSH
 {
-    public partial class Form1 : Form
+    public partial class FrmSSH : Form
     {
 
         #region Inicio
-        public Form1(string args)
+        public FrmSSH(string args)
         {
             InitializeComponent();
             LeConfig();
@@ -193,7 +195,7 @@ namespace ProdanSSH
             catch (Exception)
             {
                 Thread.Sleep(4598);
-                Output("Não foi possível conectar ao servidor.\nVerifique os dados de conexão.\n\n");
+                Output("Não foi possível conectar ao servidor.\nVerifique os dados de conexão.\n\n\n", true);
                 return null;
             }
         }
@@ -206,14 +208,14 @@ namespace ProdanSSH
         public Servidor TryDefault()
         {
             Servidor Serv = new Servidor();
-            Output("Não há nenhum servidor informado.\nBuscando dados por osmose, aguarde por favor...\n\n");
+            Output("Não há nenhum servidor informado.\nBuscando dados por osmose, aguarde por favor...\n\n\n", true);
             Serv.host = GetServerAdress();
             Serv.user = "root";
             Serv.pass = "prodan46"; //não mudem a senha padrão
             if (!Conecta(Serv).Equals(null))
             {
                 Thread.Sleep(1398);
-                Output("Conectado em " + Serv.host + Environment.NewLine);
+                Output("Conectado em " + Serv.host + Environment.NewLine + Environment.NewLine, true);
                 GravaConfig(Serv);
                 LeConfig();
                 return Serv;
@@ -233,21 +235,78 @@ namespace ProdanSSH
         /// <returns></returns>
         public object Conecta(Servidor Serv)
         {
-            TimeSpan timeout = new TimeSpan(0, 0, 1);
             try
             {
                 var client = new SshClient(Serv.host, Serv.user, Serv.pass); // cria objeto do cliente SSH
-                client.KeepAliveInterval = timeout;
                 client.Connect(); // conecta 
                 if (client.IsConnected) return client; // retorna objeto client se este não for nulo
                 else return null;
             }
             catch (Exception exc)
             {
-                Output(exc.Message+Environment.NewLine+Environment.NewLine);
+                Output(exc.Message + Environment.NewLine + Environment.NewLine + Environment.NewLine, true);
                 return null;
             }
         }
+
+
+
+        ////TESTE////////TESTE///////TESTE///////TESTE///////TESTE///////TESTE///////////
+        ///////////TESTE///////TESTE///////TESTE///////TESTE///////TESTE///////TESTE/////
+
+        public void Test()
+        {
+            Servidor Serv = SetaServidor(false);
+            ExpectSSH(Serv.host, Serv.user, Serv.pass, "/etc/rc.d/rc.postgres stop");
+
+        }
+
+        public void ExpectSSH(string address, string login, string password, string command)
+        {
+            try
+            {
+                SshClient sshClient = new SshClient(address, 22, login, password);
+
+                sshClient.Connect();
+                IDictionary<Renci.SshNet.Common.TerminalModes, uint> termkvp = new Dictionary<Renci.SshNet.Common.TerminalModes, uint>();
+                termkvp.Add(Renci.SshNet.Common.TerminalModes.ECHO, 53);
+
+                ShellStream shellStream = sshClient.CreateShellStream("xterm", 80, 24, 800, 600, 1024, termkvp);
+
+
+                //Get logged in
+                string rep = shellStream.Expect(new Regex(@"[$>]")); //expect user prompt
+                Output(rep, true);
+
+                //send command
+                shellStream.WriteLine(command);
+                rep = shellStream.Expect(new Regex(@"([$#>:])")); //expect password or user prompt
+                Output(rep, true);
+
+                //check to send password
+                if (rep.Contains(":"))
+                {
+                    //send password
+                    shellStream.WriteLine("prodan46");
+                    rep = shellStream.Expect(new Regex(@"[$#>]")); //expect user or root prompt
+                    Output(rep, true);
+                }
+
+                sshClient.Disconnect();
+            }//try to open connection
+            catch (Exception ex)
+            {
+                System.Console.WriteLine(ex.ToString());
+                throw ex;
+            }
+
+        }
+
+        ////TESTE////////TESTE///////TESTE///////TESTE///////TESTE///////TESTE///////////
+        ///////////TESTE///////TESTE///////TESTE///////TESTE///////TESTE///////TESTE/////
+
+
+
 
 
         /// <summary>
@@ -261,14 +320,17 @@ namespace ProdanSSH
             try
             {
                 var client = Conecta(Serv) as SshClient;
+                var a = client.ConnectionInfo;
+
                 TimeSpan timeout = new TimeSpan(0, 0, 1);
                 if (client != null)
                 {
                     string result, error = String.Empty;
                     if (Serv.user != "root") // teste se o usuario não for root, precisa rodar os comandos com a instrução sudo e passando a senha do usuário
                     {
-                        string newinput = String.Format("echo {0} | sudo -S {1}", Serv.pass, input); // remonta o comando enviado ao método e junta a instrução sudo e a senha
-                        var cmd = client.CreateCommand(input);
+                        //string newinput = String.Format("echo {0} | sudo -S {1} /bin/sh", Serv.pass, input); // remonta o comando enviado ao método e junta a instrução sudo e a senha
+                        string newinput = String.Format("sudo {0}", input);
+                        var cmd = client.CreateCommand(newinput);
                         cmd.CommandTimeout = timeout;
                         cmd.Execute();
                         result = cmd.Result;
@@ -303,10 +365,18 @@ namespace ProdanSSH
         /// Imprime resultado dos comandos no RichTextBox
         /// </summary>
         /// <param name="message"></param>
-        public void Output(string message)
+        public void Output(string message, bool scroll)
         {
-            rtbOutput.AppendText(message + Environment.NewLine); // adiciona msg
-            rtbOutput.ScrollToCaret(); // corre a barra de rolagem para o fim do texto
+            if (this.rtbOutput.InvokeRequired)
+            {
+                SetTextCallback d = new SetTextCallback(Output);
+                this.Invoke(d, new object[] { message, true });
+            }
+            else
+            {
+                rtbOutput.AppendText(message); // adiciona msg
+                if (scroll) rtbOutput.ScrollToCaret(); // corre a barra de rolagem para o fim do texto
+            }
         }
 
         #endregion
@@ -349,30 +419,30 @@ namespace ProdanSSH
         {
             try
             {
-                Output("Conectando ao servidor...: " + Environment.NewLine);            
+                Output("Conectando ao servidor " + Comando(Serv, "hostname") + Environment.NewLine + Environment.NewLine, true);
                 DateTime dtserv = DataServ(Serv);
-                Output("Horario em "+Serv.host+" : " + dtserv.ToString() + Environment.NewLine);
+                Output("Horario em " + Serv.host + " : " + dtserv.ToString() + Environment.NewLine + Environment.NewLine, true);
                 DateTime dt_oficial = GetTime();
-                Output("Horario oficial: " + dt_oficial.ToString());
+                Output("Horario oficial: " + dt_oficial.ToString() + Environment.NewLine, true);
                 TimeSpan difer = (Convert.ToDateTime(dt_oficial) - Convert.ToDateTime(dtserv)).Duration();
 
                 if (difer > TimeSpan.FromSeconds(1))
                 {
                     string cmd = string.Format("date -s '{0}-{1}-{2} {3}:{4}:{5}'", dt_oficial.Year, dt_oficial.Month.ToString().PadLeft(2, '0'), dt_oficial.Day.ToString().PadLeft(2, '0'), dt_oficial.Hour, dt_oficial.Minute, dt_oficial.Second);
-                    Output("Corrigindo horário......." + Environment.NewLine);
+                    Output("Corrigindo horário......." + Environment.NewLine + Environment.NewLine, true);
                     var result = Comando(Serv, cmd);
                     if (!result.Equals(null))
                     {
                         Comando(Serv, "hwclock -w");
-                        Output("Horário do linux alterado para\n" + result.ToString().TrimEnd() + Environment.NewLine);
+                        Output("Horário do linux alterado para\n" + result.ToString().TrimEnd() + Environment.NewLine + Environment.NewLine, true);
                     }
                 }
-                else Output("Horário está dentro da tolerância, não será alterado." + Environment.NewLine + Environment.NewLine);
+                else Output("Horário está dentro da tolerância, não será alterado." + Environment.NewLine + Environment.NewLine + Environment.NewLine, true);
 
             }
             catch (Exception)
             {
-                Output("Não foi possível verificar o horário. Verifique a conexão com o servidor."+Environment.NewLine+Environment.NewLine);
+                Output("Não foi possível verificar o horário. Verifique a conexão com o servidor." + Environment.NewLine + Environment.NewLine + Environment.NewLine, true);
             }
         }
 
@@ -380,13 +450,13 @@ namespace ProdanSSH
         public DateTime GetTime()
         {
             var result = DateTime.Now;
-            
+
             string[] servers = new string[] {
 
                 "time.nist.gov",
                 "time-c.nist.gov",
                 "time-d.nist.gov",
-                "wwv.nist.gov"        
+                "wwv.nist.gov"
             };
             Random rnd = new Random();
             foreach (string server in servers.OrderBy(x => rnd.NextDouble()).Take(9))
@@ -394,7 +464,7 @@ namespace ProdanSSH
                 try
                 {
                     // Connect to the server (at port 13) and get the response. Timeout max 1second
-                    Output("Consultando horário em " + server + Environment.NewLine);
+                    Output("Consultando horário em " + server + Environment.NewLine + Environment.NewLine, true);
                     string serverResponse = string.Empty;
                     var tcpClient = new TcpClient();
                     if (tcpClient.ConnectAsync(server, 13).Wait(1000))
@@ -482,8 +552,7 @@ namespace ProdanSSH
         }
 
         Uri uri = new Uri("https://the.earth.li/~sgtatham/putty/latest/w32/putty.exe");
-        string filename = (Application.StartupPath+"\\putty.exe");
-        int a = 1;
+        string filename = (Application.StartupPath + "\\putty.exe");
         private void btnPutty_Click(object sender, EventArgs e)
         {
             try
@@ -492,34 +561,34 @@ namespace ProdanSSH
                 Serv = SetaServidor(false);
                 string args = string.Format(" -ssh {0}@{1} 22 -pw {2}", Serv.user, Serv.host, Serv.pass);
 
-                if(File.Exists(filename))
+                if (File.Exists(filename))
                 {
-                    Output("Abrindo sessão SSH em " + Serv.host + "...\n\n");
+                    Output("Abrindo sessão SSH em " + Serv.host + "...\n\n\n", true);
                     Thread.Sleep(500);
                     Process process = Process.Start(filename, args);
                 }
                 else
                 {
-                    Output("PuTTY não encontrado. Efetuando download...\n\n");
+                    Output("PuTTY não encontrado. Efetuando download...\n\n\n", true);
                     WebClient wc = new WebClient();
                     wc.DownloadFileAsync(uri, filename);
                     wc.DownloadProgressChanged += new DownloadProgressChangedEventHandler(wc_DownloadProgressChanged);
                     wc.DownloadFileCompleted += new AsyncCompletedEventHandler(wc_DownloadFileCompleted);
                 }
-            }           
-            catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.Message.ToString());
-            }      
+            }
         }
         private void wc_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
         {
             progressBar1.Visible = true;
             progressBar1.Value = e.ProgressPercentage;
-                if (progressBar1.Value == progressBar1.Maximum)
-                {
-                    progressBar1.Value = 0;
-                }
+            if (progressBar1.Value == progressBar1.Maximum)
+            {
+                progressBar1.Value = 0;
+            }
         }
 
         private void wc_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
@@ -528,12 +597,12 @@ namespace ProdanSSH
             {
                 Servidor Serv = new Servidor();
                 Serv = SetaServidor(false);
-                Output("PuTTY baixado com sucesso...\nAbrindo sessão em " + Serv.host + "...\n\n");
+                Output("PuTTY baixado com sucesso...\nAbrindo sessão em " + Serv.host + "...\n\n\n", true);
                 string args = string.Format("-ssh {0}@{1} 22 -pw {2}", Serv.user, Serv.host, Serv.pass);
                 progressBar1.Visible = false;
                 Process.Start(filename, args);
             }
-            else Output("Não foi possível iniciar o PuTTY./nFavor baixe manualmente.\n\n");
+            else Output("Não foi possível iniciar o PuTTY./nFavor baixe manualmente.\n\n\n", true);
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
@@ -543,7 +612,7 @@ namespace ProdanSSH
                 this.Hide();
                 return true;
             }
-            if (keyData == Keys.F12)
+            if (keyData == Keys.F12) //limpa tudo
             {
                 textIP.Text = string.Empty;
                 textUser.Text = string.Empty;
@@ -558,12 +627,12 @@ namespace ProdanSSH
                     }
                     catch { }
                 }
-                Output("nooooooooo!!!!\n\n");
+                Output("nooooooooo!!!!\n\n", true);
                 return true;
             }
-            if (keyData == Keys.F1)
+            if (keyData == Keys.F1) //help na tela
             {
-                Output("Fui eu que fiz, mas se deu merda a culpa não é minha.\n\nby Nilton Toffoli.\n\n");
+                Output("\n\n-----------------------------------------------------------------------------------------\n\nProdanSSH - Nilton Toffoli - HELP\n\n-----------------------------------------------------------------------------------------\n\n                    Configurações:\n\nAs configurações ficam salvas automaticamente após a primeira conexão válida.\n\n- Host: Endereço IP do servidor.\n- Usuário: Usuário para acesso ao linux\n- Senha: Senha do usuário do linux.\n- Verificar horario na inicialização: Inicia programa com o Windows e faz a verificação\n- F12: Limpar configurações\n\n                    Funções:\n\n- Verificar Horário: Busca o horário atual na internet e compara com a data/hora do servidor. Altera automaticamente se estiver fora da tolerância de 1 min.\n- Lista Processos: Dispara o comando 'ps -ax' e lista os processos do servidor.\n- Matar Processo: Finaliza Processos (digite o PID do processo e tecle ENTER).\n- Reiniciar Postgres: Dispara o comando para reiniciar o Postgres.\n- Reinciar Servidor: Dispara o comando 'reboot' e reinciar o servidor.\n- PuTTY: Executa e conecta o PuTTY no servidor expecificado. Faz o download automático do PuTTY se esse não for encontrado.\n\n-----------------------------------------------------------------------------------------\n\n\n        Limpa Tela\n\n            |\n            |\n            |", false);
                 return true;
             }
             return base.ProcessCmdKey(ref msg, keyData);
@@ -573,14 +642,14 @@ namespace ProdanSSH
         {
             DialogResult dialogResult = MessageBox.Show("Reiniciar o Servidor?", "Reiniciar", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (dialogResult == DialogResult.Yes)
-            {     
+            {
                 DialogResult dialogResult2 = MessageBox.Show("Tem certeza que deseja Reiniciar o Servidor??", "Reiniciar", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                 if (dialogResult2 == DialogResult.Yes)
                 {
                     Servidor Serv = new Servidor();
                     Serv = SetaServidor(false);
                     Comando(Serv, "reboot");
-                    Output("O servidor está reiniciando...\n\n");
+                    Output("O servidor está reiniciando...\n\n\n", true);
                 }
             }
         }
@@ -590,7 +659,7 @@ namespace ProdanSSH
             Servidor Serv = new Servidor();
             Serv = SetaServidor(false);
             string result = Comando(Serv, "ps -ax") as string;
-            Output(result);
+            Output(result + Environment.NewLine, true);
         }
 
         private void btnShootToKill_Click(object sender, EventArgs e)
@@ -598,10 +667,10 @@ namespace ProdanSSH
             Point screenPoint = btnShootToKill.PointToScreen(new Point(btnShootToKill.Left, btnShootToKill.Bottom));
 
             if (screenPoint.Y + contextProcKill.Size.Height > Screen.PrimaryScreen.WorkingArea.Height)
-            contextProcKill.Show(btnShootToKill, new Point(0, -contextProcKill.Size.Height));           
+                contextProcKill.Show(btnShootToKill, new Point(0, -contextProcKill.Size.Height));
             else contextProcKill.Show(btnShootToKill, new Point(0, btnShootToKill.Height));
 
-            toolStripTextBox1.Focus();          
+            toolStripTextBox1.Focus();
         }
 
         private void toolStripTextBox1_KeyDown(object sender, KeyEventArgs e)
@@ -612,9 +681,9 @@ namespace ProdanSSH
                 Serv = SetaServidor(false);
                 string procid = toolStripTextBox1.Text;
                 toolStripTextBox1.Clear();
-                Output("kill " + procid + Environment.NewLine);
+                Output("kill " + procid + Environment.NewLine + Environment.NewLine, true);
                 string result = Comando(Serv, "kill " + procid) as string;
-                Output(result + Environment.NewLine);
+                Output(result + Environment.NewLine + Environment.NewLine, true);
             }
         }
 
@@ -627,6 +696,38 @@ namespace ProdanSSH
                 GravaConfig(Serv);
                 ComparaTempo(Serv);
             }
+        }
+
+        private void btnPgReset_Click(object sender, EventArgs e)
+        {
+            DialogResult dialogResult = MessageBox.Show("Todas as conexões ao banco de dados serão encerradas. Continuar?", "Reiniciar Postgres?", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+            if (dialogResult == DialogResult.Yes)
+            {
+                Servidor Serv = new Servidor();
+                Serv = SetaServidor(false);
+                Output("Reiniciando Postgres..." + Environment.NewLine + Environment.NewLine, true);
+                string result = Comando(Serv, "/etc/rc.d/rc.postgres stop") as string;
+                Output(result + Environment.NewLine + Environment.NewLine, true);
+                Thread Pg = new Thread(new ThreadStart(this.PgCheck));
+                Pg.Start();
+            }
+        }
+
+        public void PgCheck()
+        {
+            Servidor Serv = new Servidor();
+            Serv = SetaServidor(false);
+            //string result = Comando(Serv, "/etc/rc.d/postgresql status") as String;
+
+
+            //Output(result + Environment.NewLine, true);
+        }
+
+        delegate void SetTextCallback(string text, bool scroll);
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Test();
         }
     }
 }
