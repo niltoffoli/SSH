@@ -257,7 +257,9 @@ namespace ProdanSSH
         public void Test()
         {
             Servidor Serv = SetaServidor(false);
-            ExpectSSH(Serv.host, Serv.user, Serv.pass, "/etc/rc.d/rc.postgres stop");
+            ExpectSSH(Serv.host, Serv.user, Serv.pass, "/etc/rc.d/rc.postgres start");
+
+            //ExpectSSH(Serv.host, Serv.user, Serv.pass, "reboot");
 
         }
 
@@ -274,26 +276,40 @@ namespace ProdanSSH
                 ShellStream shellStream = sshClient.CreateShellStream("xterm", 80, 24, 800, 600, 1024, termkvp);
 
 
-                //Get logged in
-                string rep = shellStream.Expect(new Regex(@"[$>]")); //expect user prompt
+                //login
+                string rep = shellStream.Expect(new Regex(@"[$]"));
                 Output(rep, true);
 
-                //send command
+                Thread.Sleep(1000);
+
+                //root
+                shellStream.WriteLine("su -");
+                rep = shellStream.Expect(new Regex(@"[:]"));
+                shellStream.WriteLine("prodan46");
+                Output(rep, true);
+                rep = shellStream.Expect(new Regex(@"([#])"));
+                Output(rep, true);
+
+                Thread.Sleep(100);
+
+                //comando
                 shellStream.WriteLine(command);
-                rep = shellStream.Expect(new Regex(@"([$#>:])")); //expect password or user prompt
-                Output(rep, true);
+                rep = shellStream.Expect(new Regex(@"([#])")); 
+                Output(rep+Environment.NewLine + Environment.NewLine, true);
 
-                //check to send password
-                if (rep.Contains(":"))
-                {
-                    //send password
-                    shellStream.WriteLine("prodan46");
-                    rep = shellStream.Expect(new Regex(@"[$#>]")); //expect user or root prompt
-                    Output(rep, true);
-                }
+                shellStream.WriteLine("/etc/rc.d/rc.postgres status");
+                rep = shellStream.Expect(new Regex(@"([#])"));
+                Output(rep + Environment.NewLine + Environment.NewLine + Environment.NewLine, true);
+                //if (rep.Contains(":"))
+                //{
+
+                //    shellStream.WriteLine("prodan46");
+                //    rep = shellStream.Expect(new Regex(@"[$#>]")); 
+                //    Output(rep, true);
+                //}
 
                 sshClient.Disconnect();
-            }//try to open connection
+            }
             catch (Exception ex)
             {
                 System.Console.WriteLine(ex.ToString());
@@ -328,8 +344,8 @@ namespace ProdanSSH
                     string result, error = String.Empty;
                     if (Serv.user != "root") // teste se o usuario não for root, precisa rodar os comandos com a instrução sudo e passando a senha do usuário
                     {
-                        //string newinput = String.Format("echo {0} | sudo -S {1} /bin/sh", Serv.pass, input); // remonta o comando enviado ao método e junta a instrução sudo e a senha
-                        string newinput = String.Format("sudo {0}", input);
+                        string newinput = String.Format("echo {0} | sudo -S {1}", Serv.pass, input); // remonta o comando enviado ao método e junta a instrução sudo e a senha
+                        //string newinput = String.Format("sudo {0}", input);
                         var cmd = client.CreateCommand(newinput);
                         cmd.CommandTimeout = timeout;
                         cmd.Execute();
