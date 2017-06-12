@@ -254,60 +254,46 @@ namespace ProdanSSH
         ////TESTE////////TESTE///////TESTE///////TESTE///////TESTE///////TESTE///////////
         ///////////TESTE///////TESTE///////TESTE///////TESTE///////TESTE///////TESTE/////
 
-        public void Test()
+        public string GetRootPass()
         {
-            Servidor Serv = SetaServidor(false);
-            ExpectSSH(Serv.host, Serv.user, Serv.pass, "/etc/rc.d/rc.postgres start");
 
-            //ExpectSSH(Serv.host, Serv.user, Serv.pass, "reboot");
 
         }
 
-        public void ExpectSSH(string address, string login, string password, string command)
+        public void ExpectSSH(Servidor Serv, string command, bool sudo)
         {
             try
             {
-                SshClient sshClient = new SshClient(address, 22, login, password);
-
+                SshClient sshClient = new SshClient(Serv.host, 22, Serv.user, Serv.pass);
                 sshClient.Connect();
                 IDictionary<Renci.SshNet.Common.TerminalModes, uint> termkvp = new Dictionary<Renci.SshNet.Common.TerminalModes, uint>();
                 termkvp.Add(Renci.SshNet.Common.TerminalModes.ECHO, 53);
-
                 ShellStream shellStream = sshClient.CreateShellStream("xterm", 80, 24, 800, 600, 1024, termkvp);
-
+                string rep = String.Empty;
 
                 //login
-                string rep = shellStream.Expect(new Regex(@"[$]"));
+                rep = shellStream.Expect(new Regex(@"[$]"));
                 Output(rep, true);
-
                 Thread.Sleep(1000);
 
                 //root
-                shellStream.WriteLine("su -");
-                rep = shellStream.Expect(new Regex(@"[:]"));
-                shellStream.WriteLine("prodan46");
-                Output(rep, true);
-                rep = shellStream.Expect(new Regex(@"([#])"));
-                Output(rep, true);
-
-                Thread.Sleep(100);
+                if (Serv.user != "root" && sudo == true)
+                {
+                    shellStream.WriteLine("su -");
+                    rep = shellStream.Expect(new Regex(@"[:]"));
+                    shellStream.WriteLine("prodan46");
+                    Output(rep, true);
+                    rep = shellStream.Expect(new Regex(@"([#])"));
+                    Output(rep, true);
+                    Thread.Sleep(100);
+                }
 
                 //comando
                 shellStream.WriteLine(command);
-                rep = shellStream.Expect(new Regex(@"([#])")); 
+                rep = shellStream.Expect(new Regex(@"([:$])")); 
+                rep = shellStream.Expect(new Regex(@"([#$])"));
                 Output(rep+Environment.NewLine + Environment.NewLine, true);
-
-                shellStream.WriteLine("/etc/rc.d/rc.postgres status");
-                rep = shellStream.Expect(new Regex(@"([#])"));
-                Output(rep + Environment.NewLine + Environment.NewLine + Environment.NewLine, true);
-                //if (rep.Contains(":"))
-                //{
-
-                //    shellStream.WriteLine("prodan46");
-                //    rep = shellStream.Expect(new Regex(@"[$#>]")); 
-                //    Output(rep, true);
-                //}
-
+           
                 sshClient.Disconnect();
             }
             catch (Exception ex)
@@ -674,8 +660,9 @@ namespace ProdanSSH
         {
             Servidor Serv = new Servidor();
             Serv = SetaServidor(false);
-            string result = Comando(Serv, "ps -ax") as string;
-            Output(result + Environment.NewLine, true);
+            ExpectSSH(Serv.host, Serv.user, Serv.pass, "ps -ef");
+            //string result = Comando(Serv, "ps -ax") as string;
+            //Output(result + Environment.NewLine, true);
         }
 
         private void btnShootToKill_Click(object sender, EventArgs e)
@@ -722,8 +709,9 @@ namespace ProdanSSH
                 Servidor Serv = new Servidor();
                 Serv = SetaServidor(false);
                 Output("Reiniciando Postgres..." + Environment.NewLine + Environment.NewLine, true);
-                string result = Comando(Serv, "/etc/rc.d/rc.postgres stop") as string;
-                Output(result + Environment.NewLine + Environment.NewLine, true);
+                ExpectSSH(Serv.host, Serv.user, Serv.pass, "/etc/rc.d/rc.postgres stop");
+                //string result = Comando(Serv, "/etc/rc.d/rc.postgres stop") as string;
+                //Output(result + Environment.NewLine + Environment.NewLine, true);
                 Thread Pg = new Thread(new ThreadStart(this.PgCheck));
                 Pg.Start();
             }
@@ -733,6 +721,7 @@ namespace ProdanSSH
         {
             Servidor Serv = new Servidor();
             Serv = SetaServidor(false);
+            ExpectSSH(Serv.host, Serv.user, Serv.pass, "/etc/rc.d/postgresql status");
             //string result = Comando(Serv, "/etc/rc.d/postgresql status") as String;
 
 
