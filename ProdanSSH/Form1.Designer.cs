@@ -53,10 +53,13 @@
             this.btnVerifica = new System.Windows.Forms.Button();
             this.btnPutty = new System.Windows.Forms.Button();
             this.lblHelp = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.textRoot = new System.Windows.Forms.TextBox();
+            this.lblRoot = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.contextBandeja.SuspendLayout();
             this.contextProcKill.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // textIP
@@ -91,9 +94,9 @@
             this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(208, 17);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(38, 13);
+            this.label4.Size = new System.Drawing.Size(77, 13);
             this.label4.TabIndex = 4;
-            this.label4.Text = "Senha";
+            this.label4.Text = "Senha Usuário";
             // 
             // textUser
             // 
@@ -103,6 +106,7 @@
             this.textUser.Name = "textUser";
             this.textUser.Size = new System.Drawing.Size(100, 20);
             this.textUser.TabIndex = 2;
+            this.textUser.TextChanged += new System.EventHandler(this.textUser_TextChanged);
             // 
             // textPass
             // 
@@ -125,7 +129,7 @@
             this.groupBox1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.groupBox1.Size = new System.Drawing.Size(347, 79);
+            this.groupBox1.Size = new System.Drawing.Size(335, 79);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             // 
@@ -317,15 +321,35 @@
             this.lblHelp.TabIndex = 15;
             this.lblHelp.Text = "F1: Ajuda";
             // 
-            // button1
+            // groupBox2
             // 
-            this.button1.Image = global::ProdanSSH.Properties.Resources._1492562768_edit_clear;
-            this.button1.Location = new System.Drawing.Point(264, 338);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(27, 26);
-            this.button1.TabIndex = 16;
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.groupBox2.Controls.Add(this.textRoot);
+            this.groupBox2.Controls.Add(this.lblRoot);
+            this.groupBox2.Location = new System.Drawing.Point(349, 4);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(141, 79);
+            this.groupBox2.TabIndex = 16;
+            this.groupBox2.TabStop = false;
+            // 
+            // textRoot
+            // 
+            this.textRoot.BackColor = System.Drawing.Color.FloralWhite;
+            this.textRoot.Location = new System.Drawing.Point(18, 32);
+            this.textRoot.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.textRoot.Name = "textRoot";
+            this.textRoot.Size = new System.Drawing.Size(104, 20);
+            this.textRoot.TabIndex = 5;
+            this.textRoot.UseSystemPasswordChar = true;
+            // 
+            // lblRoot
+            // 
+            this.lblRoot.AutoSize = true;
+            this.lblRoot.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblRoot.Location = new System.Drawing.Point(15, 17);
+            this.lblRoot.Name = "lblRoot";
+            this.lblRoot.Size = new System.Drawing.Size(69, 13);
+            this.lblRoot.TabIndex = 6;
+            this.lblRoot.Text = "Senha root";
             // 
             // FrmSSH
             // 
@@ -334,7 +358,7 @@
             this.BackColor = System.Drawing.Color.Snow;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.ClientSize = new System.Drawing.Size(799, 384);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.lblHelp);
             this.Controls.Add(this.btnPgReset);
             this.Controls.Add(this.btnShootToKill);
@@ -360,6 +384,8 @@
             this.contextBandeja.ResumeLayout(false);
             this.contextProcKill.ResumeLayout(false);
             this.contextProcKill.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -390,7 +416,9 @@
         private System.Windows.Forms.ToolStripTextBox toolStripTextBox1;
         private System.Windows.Forms.Button btnPgReset;
         private System.Windows.Forms.Label lblHelp;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.TextBox textRoot;
+        private System.Windows.Forms.Label lblRoot;
     }
 }
 
