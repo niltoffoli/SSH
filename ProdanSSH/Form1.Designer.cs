@@ -40,7 +40,7 @@
             this.tray = new System.Windows.Forms.NotifyIcon(this.components);
             this.contextBandeja = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.sairToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.checkVerify = new System.Windows.Forms.CheckBox();
             this.rtbOutput = new System.Windows.Forms.RichTextBox();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.contextProcKill = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -56,10 +56,14 @@
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.textRoot = new System.Windows.Forms.TextBox();
             this.lblRoot = new System.Windows.Forms.Label();
+            this.contextProcList = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.todosOsProcessosToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.somentePostgresToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox1.SuspendLayout();
             this.contextBandeja.SuspendLayout();
             this.contextProcKill.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            this.contextProcList.SuspendLayout();
             this.SuspendLayout();
             // 
             // textIP
@@ -155,17 +159,17 @@
             this.sairToolStripMenuItem.Text = "Sair";
             this.sairToolStripMenuItem.Click += new System.EventHandler(this.sairToolStripMenuItem_Click);
             // 
-            // checkBox1
+            // checkVerify
             // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.checkBox1.Location = new System.Drawing.Point(479, 344);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(174, 17);
-            this.checkBox1.TabIndex = 8;
-            this.checkBox1.Text = "Verificar horário na inicialização";
-            this.checkBox1.UseVisualStyleBackColor = true;
-            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
+            this.checkVerify.AutoSize = true;
+            this.checkVerify.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.checkVerify.Location = new System.Drawing.Point(479, 344);
+            this.checkVerify.Name = "checkVerify";
+            this.checkVerify.Size = new System.Drawing.Size(174, 17);
+            this.checkVerify.TabIndex = 10;
+            this.checkVerify.Text = "Verificar horário na inicialização";
+            this.checkVerify.UseVisualStyleBackColor = true;
+            this.checkVerify.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
             // 
             // rtbOutput
             // 
@@ -218,7 +222,7 @@
             this.btnPgReset.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnPgReset.Name = "btnPgReset";
             this.btnPgReset.Size = new System.Drawing.Size(128, 25);
-            this.btnPgReset.TabIndex = 14;
+            this.btnPgReset.TabIndex = 8;
             this.btnPgReset.Text = "Reiniciar Postgres";
             this.btnPgReset.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.btnPgReset.UseVisualStyleBackColor = false;
@@ -234,7 +238,7 @@
             this.btnShootToKill.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnShootToKill.Name = "btnShootToKill";
             this.btnShootToKill.Size = new System.Drawing.Size(128, 25);
-            this.btnShootToKill.TabIndex = 6;
+            this.btnShootToKill.TabIndex = 7;
             this.btnShootToKill.Text = "Matar Processo";
             this.btnShootToKill.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.btnShootToKill.UseVisualStyleBackColor = false;
@@ -250,7 +254,7 @@
             this.btnListproc.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnListproc.Name = "btnListproc";
             this.btnListproc.Size = new System.Drawing.Size(128, 25);
-            this.btnListproc.TabIndex = 5;
+            this.btnListproc.TabIndex = 6;
             this.btnListproc.Text = "Listar Processos";
             this.btnListproc.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.btnListproc.UseVisualStyleBackColor = false;
@@ -266,7 +270,7 @@
             this.btnRestart.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnRestart.Name = "btnRestart";
             this.btnRestart.Size = new System.Drawing.Size(128, 25);
-            this.btnRestart.TabIndex = 7;
+            this.btnRestart.TabIndex = 9;
             this.btnRestart.Text = "Reiniciar Servidor";
             this.btnRestart.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.btnRestart.UseVisualStyleBackColor = false;
@@ -278,7 +282,7 @@
             this.btnLimpa.Location = new System.Drawing.Point(80, 338);
             this.btnLimpa.Name = "btnLimpa";
             this.btnLimpa.Size = new System.Drawing.Size(27, 26);
-            this.btnLimpa.TabIndex = 9;
+            this.btnLimpa.TabIndex = 11;
             this.btnLimpa.UseVisualStyleBackColor = true;
             this.btnLimpa.Click += new System.EventHandler(this.btnLimpa_Click);
             // 
@@ -292,7 +296,7 @@
             this.btnVerifica.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnVerifica.Name = "btnVerifica";
             this.btnVerifica.Size = new System.Drawing.Size(128, 25);
-            this.btnVerifica.TabIndex = 4;
+            this.btnVerifica.TabIndex = 5;
             this.btnVerifica.Text = "Verificar Horario";
             this.btnVerifica.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.btnVerifica.UseVisualStyleBackColor = false;
@@ -305,7 +309,7 @@
             this.btnPutty.Location = new System.Drawing.Point(8, 338);
             this.btnPutty.Name = "btnPutty";
             this.btnPutty.Size = new System.Drawing.Size(66, 26);
-            this.btnPutty.TabIndex = 10;
+            this.btnPutty.TabIndex = 12;
             this.btnPutty.Text = "PuTTY";
             this.btnPutty.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.btnPutty.UseVisualStyleBackColor = true;
@@ -338,7 +342,7 @@
             this.textRoot.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.textRoot.Name = "textRoot";
             this.textRoot.Size = new System.Drawing.Size(104, 20);
-            this.textRoot.TabIndex = 5;
+            this.textRoot.TabIndex = 4;
             this.textRoot.UseSystemPasswordChar = true;
             // 
             // lblRoot
@@ -350,6 +354,28 @@
             this.lblRoot.Size = new System.Drawing.Size(69, 13);
             this.lblRoot.TabIndex = 6;
             this.lblRoot.Text = "Senha root";
+            // 
+            // contextProcList
+            // 
+            this.contextProcList.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.todosOsProcessosToolStripMenuItem,
+            this.somentePostgresToolStripMenuItem});
+            this.contextProcList.Name = "contextProcList";
+            this.contextProcList.Size = new System.Drawing.Size(177, 48);
+            // 
+            // todosOsProcessosToolStripMenuItem
+            // 
+            this.todosOsProcessosToolStripMenuItem.Name = "todosOsProcessosToolStripMenuItem";
+            this.todosOsProcessosToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+            this.todosOsProcessosToolStripMenuItem.Text = "Todos os Processos";
+            this.todosOsProcessosToolStripMenuItem.Click += new System.EventHandler(this.todosOsProcessosToolStripMenuItem_Click);
+            // 
+            // somentePostgresToolStripMenuItem
+            // 
+            this.somentePostgresToolStripMenuItem.Name = "somentePostgresToolStripMenuItem";
+            this.somentePostgresToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+            this.somentePostgresToolStripMenuItem.Text = "Somente Postgres";
+            this.somentePostgresToolStripMenuItem.Click += new System.EventHandler(this.somentePostgresToolStripMenuItem_Click);
             // 
             // FrmSSH
             // 
@@ -368,7 +394,7 @@
             this.Controls.Add(this.btnLimpa);
             this.Controls.Add(this.btnVerifica);
             this.Controls.Add(this.btnPutty);
-            this.Controls.Add(this.checkBox1);
+            this.Controls.Add(this.checkVerify);
             this.Controls.Add(this.rtbOutput);
             this.Controls.Add(this.groupBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -386,6 +412,7 @@
             this.contextProcKill.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
+            this.contextProcList.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -404,7 +431,7 @@
         private System.Windows.Forms.NotifyIcon tray;
         private System.Windows.Forms.ContextMenuStrip contextBandeja;
         private System.Windows.Forms.ToolStripMenuItem sairToolStripMenuItem;
-        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.CheckBox checkVerify;
         private System.Windows.Forms.Button btnPutty;
         private System.Windows.Forms.RichTextBox rtbOutput;
         private System.Windows.Forms.Button btnLimpa;
@@ -419,6 +446,9 @@
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.TextBox textRoot;
         private System.Windows.Forms.Label lblRoot;
+        private System.Windows.Forms.ContextMenuStrip contextProcList;
+        private System.Windows.Forms.ToolStripMenuItem todosOsProcessosToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem somentePostgresToolStripMenuItem;
     }
 }
 

@@ -69,7 +69,7 @@ namespace ProdanSSH
         {
             try
             {
-                if (checkBox1.Checked) // cria chave
+                if (checkVerify.Checked) // cria chave
                 {
                     RegistryKey add = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
                     add.SetValue("Servidor Linux", "\"" + Application.ExecutablePath.ToString() + "\" -auto");
@@ -110,20 +110,6 @@ namespace ProdanSSH
         }
 
 
-        /// <summary>
-        /// Tá aqui mas não é pra usar.
-        /// </summary>
-        public void FirstRun()
-        {
-            string host = GetServerAdress();
-            if (!host.Equals(null))
-            {
-                textIP.Text = host;
-                Config.Default.host = host;
-                Config.Default.Save();
-            }
-        }
-
         #endregion
 
         #region Arquivo de Configuração
@@ -151,8 +137,7 @@ namespace ProdanSSH
             textUser.Text = Config.Default.user;
             textPass.Text = Config.Default.pass;
             textRoot.Text = Config.Default.rootpass;
-            checkBox1.Checked = Config.Default.autotime;
-
+            checkVerify.Checked = Config.Default.autotime;
         }
 
         #endregion
@@ -160,7 +145,7 @@ namespace ProdanSSH
         #region Definição do Servidor
 
         /// <summary>
-        /// Busca o endereço do servidor através do cadastrado no ODBC
+        /// Busca no registro do windows o endereço do servidor através do cadastrado no ODBC
         /// </summary>
         /// <returns></returns>
         public string GetServerAdress()
@@ -170,7 +155,7 @@ namespace ProdanSSH
                 string host = string.Empty;
                 string chave = string.Empty;
 
-                if (Environment.Is64BitOperatingSystem)
+                if (Environment.Is64BitOperatingSystem) //testa se o sistema 32 ou 64 bits, pois a chave ODBC no registro é diferente
                 {
                     chave = "HKEY_LOCAL_MACHINE\\SOFTWARE\\Wow6432Node\\ODBC\\ODBC.INI\\DS-PSQL70";
                 }
@@ -259,15 +244,15 @@ namespace ProdanSSH
         /// <returns></returns>
         public SshClient Conecta(Servidor Serv)
         {
-            int retries = 5;
+            int retries = 5; //5 tentativas de conexão
             while (retries > 0)
             {
                 try
                 {
                     SshClient client = new SshClient(Serv.host, Serv.user, Serv.pass); // cria objeto do cliente SSH
-                    client.ConnectionInfo.Timeout = TimeSpan.FromMilliseconds(1500);
-                    client.Connect(); // conecta 
-                    if (client.IsConnected) return client; // retorna objeto client se este não for nulo
+                    client.ConnectionInfo.Timeout = TimeSpan.FromMilliseconds(1500); //define timeout em ms
+                    client.Connect(); //conecta 
+                    if (client.IsConnected) return client; //retorna objeto client se este não for nulo
                     else return null;
                 }
                 catch (Exception)
@@ -282,7 +267,7 @@ namespace ProdanSSH
         }
        
         /// <summary>
-        /// Método para execução de comandos no cliente SSH
+        /// Método para execução de comandos básicos no cliente SSH
         /// </summary>
         /// <param name="Serv">Objeto com os dados de conexão ao servidor</param>
         /// <param name="input">Comando a ser executado</param>
@@ -291,16 +276,16 @@ namespace ProdanSSH
         {
             try
             {
-                var client = Conecta(Serv) as SshClient;
+                SshClient client = Conecta(Serv); //define cliente SSH
 
                 if (client != null)
                 {
                     string result, error = String.Empty;
 
-                    var cmd2 = client.CreateCommand(input);
-                    cmd2.Execute();
-                    result = cmd2.Result;
-                    error = cmd2.Error;
+                    var cmd = client.CreateCommand(input); //cria comando recebido pela string input
+                    cmd.Execute();
+                    result = cmd.Result; 
+                    error = cmd.Error;
 
                     client.Disconnect();
                     client.Dispose();
@@ -319,7 +304,7 @@ namespace ProdanSSH
         }
 
         /// <summary>
-        /// Método para rodar comando que precisem login de superusuario
+        /// Método para rodar comandos que precisem login de superusuario. Breve explicação abaixo.
         /// </summary>
         /// <param name="Serv"></param>
         /// <param name="input"></param>
@@ -328,24 +313,28 @@ namespace ProdanSSH
 
             var client = Conecta(Serv) as SshClient;
 
+            // Dependendo da versão do Linux, não é possível fazer login como root por SSH. 
+            // Para rodar comandos como SU é preciso dar o comando "su -" e passar a senha de root direto no terminal.
+            // As instruções abaixo simulam um terminal tty para rodar comandos como root.
+
             IDictionary<Renci.SshNet.Common.TerminalModes, uint> termkvp = new Dictionary<Renci.SshNet.Common.TerminalModes, uint>();
             termkvp.Add(Renci.SshNet.Common.TerminalModes.ECHO, 53);
-            ShellStream shellStream = client.CreateShellStream("xterm", 80, 24, 800, 600, 1024, termkvp);
+            ShellStream shellStream = client.CreateShellStream("xterm", 80, 24, 800, 600, 1024, termkvp);  // cria objeto shellstream para receber e enviar o fluxo de dados
             string rep = String.Empty;
-            rep = shellStream.Expect(new Regex(@"[$#]"));
-            //Output(rep, true);
-            shellStream.WriteLine("su -");
-            rep = shellStream.Expect(new Regex(@"[:$#]"));
-            //Output(rep, true);
+
+            rep = shellStream.Expect(new Regex(@"[$#]")); // Aguarda o fluxo de dados do terminal conter a expressão regular definida...
+            shellStream.WriteLine("su -"); // para escrever o comando
+
+            rep = shellStream.Expect(new Regex(@"[:$#]")); // aguarda o terminal pedir a senha
             shellStream.WriteLine(Serv.rootpass);
-            rep = shellStream.Expect(new Regex(@"([#])"));
-            //Output(rep, true);
+
+            rep = shellStream.Expect(new Regex(@"([#])")); // aguarda o login como root para excutar o comando
             shellStream.WriteLine(input);
+
             rep = shellStream.Expect(new Regex(@"([#])"));
-            Output(rep+Environment.NewLine+Environment.NewLine, true);
+            Output(rep+Environment.NewLine+Environment.NewLine, true); // imprime o fluxo de dados
 
         }
-
 
 
         /// <summary>
@@ -363,6 +352,19 @@ namespace ProdanSSH
             {
                 rtbOutput.AppendText(message); // adiciona msg
                 if (scroll) rtbOutput.ScrollToCaret(); // corre a barra de rolagem para o fim do texto
+            }
+        }
+
+        private void clearTextBox()
+        {
+            if (this.rtbOutput.InvokeRequired)
+            {
+                ClearTextCallback c = new ClearTextCallback(clearTextBox);
+                this.Invoke(c, new object[] {});
+            }
+            else
+            {
+                rtbOutput.Clear();
             }
         }
 
@@ -444,7 +446,6 @@ namespace ProdanSSH
             }
         }
 
-
         /// <summary>
         /// Busca horário oficial da internet
         /// </summary>
@@ -523,15 +524,51 @@ namespace ProdanSSH
 
         #region Processos
 
+        /// <summary>
+        /// Gera o menu de contexto ao clicar no botão Listar Processos
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnListproc_Click(object sender, EventArgs e)
+        {
+            Point screenPoint = btnListproc.PointToScreen(new Point(btnListproc.Left, btnListproc.Bottom));
+
+            if (screenPoint.Y + contextProcList.Size.Height > Screen.PrimaryScreen.WorkingArea.Height)
+                contextProcList.Show(btnListproc, new Point(0, -contextProcList.Size.Height));
+            else contextProcList.Show(btnListproc, new Point(0, btnListproc.Height));          
+        }
+
+        /// <summary>
+        /// Botão dento do menu contexto do botão Listar Processos. Lista Todos os processos
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void todosOsProcessosToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Servidor Serv = new Servidor();
             Serv = SetaServidor(false);
-            //ExpectSSH(Serv, "ps -ef", false);
             string result = Comando(Serv, "ps -ax") as string;
             Output(result + Environment.NewLine, true);
         }
 
+        /// <summary>
+        /// Botão dento do menu contexto do botão Listar Processos. Lista apenas os processos do postgres
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void somentePostgresToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Servidor Serv = new Servidor();
+            Serv = SetaServidor(false);
+            string result = Comando(Serv, "ps -ax | grep postgres") as string;
+            Output(result + Environment.NewLine, true);
+        }
+
+        /// <summary>
+        /// Gera o menu de contexto com a textbox para informar o PID do processo ao clicar no botão Matar Processo
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnShootToKill_Click(object sender, EventArgs e)
         {
             Point screenPoint = btnShootToKill.PointToScreen(new Point(btnShootToKill.Left, btnShootToKill.Bottom));
@@ -543,6 +580,11 @@ namespace ProdanSSH
             toolStripTextBox1.Focus();
         }
 
+        /// <summary>
+        /// Evento disparado ao teclar enter na textbox do botão Matar processo.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void toolStripTextBox1_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter) //se tecla pressionada for enter
@@ -552,9 +594,7 @@ namespace ProdanSSH
                 string procid = toolStripTextBox1.Text;
                 toolStripTextBox1.Clear();
                 Output("kill " + procid + Environment.NewLine + Environment.NewLine, true);
-                //ExpectSSH(Serv, "kill " + procid, false);
                 ComandoRoot(Serv, "kill " + procid);
-                //Output(result + Environment.NewLine + Environment.NewLine, true);
             }
         }
 
@@ -563,6 +603,11 @@ namespace ProdanSSH
 
         #region Postgres
 
+        /// <summary>
+        /// Evento disparado ao clicar no botão Reiniciar Postgres. Envia os comandos "parar" e "iniciar" e gera uma nova thread para verificar o status do banco.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnPgReset_Click(object sender, EventArgs e)
         {
             DialogResult dialogResult = MessageBox.Show("Todas as conexões ao banco de dados serão encerradas. Continuar?", "Reiniciar Postgres?", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
@@ -571,7 +616,6 @@ namespace ProdanSSH
                 Servidor Serv = new Servidor();
                 Serv = SetaServidor(false);
                 Output("Reiniciando Postgres..." + Environment.NewLine + Environment.NewLine, true);
-                //ExpectSSH(Serv, "/etc/rc.d/rc.postgres restart", true);
                 ComandoRoot(Serv, "/etc/rc.d/rc.postgres stop");
                 Thread.Sleep(1000);
                 ComandoRoot(Serv, "/etc/rc.d/rc.postgres start");
@@ -581,6 +625,9 @@ namespace ProdanSSH
             }
         }
 
+        /// <summary>
+        /// Método para verificar o status do banco
+        /// </summary>
         public void PgCheck()
         {
             Servidor Serv = new Servidor();
@@ -593,26 +640,32 @@ namespace ProdanSSH
 
         #region Server Restart
 
+        /// <summary>
+        /// Método que envia comando para reiniciar o servidor. Gera uma thread que fica verificando quando o servidor fica online novamente.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnRestart_Click(object sender, EventArgs e)
         {
             DialogResult dialogResult = MessageBox.Show("Reiniciar o Servidor?", "Reiniciar", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            if (dialogResult == DialogResult.Yes)
+            if (dialogResult == DialogResult.Yes) //confirmação
             {
                 DialogResult dialogResult2 = MessageBox.Show("Tem certeza que deseja Reiniciar o Servidor??", "Reiniciar", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                 if (dialogResult2 == DialogResult.Yes)
                 {
                     Servidor Serv = new Servidor();
                     Serv = SetaServidor(false);
-                    //ExpectSSH(Serv, "reboot", false);
                     ComandoRoot(Serv, "reboot");
                     Output("O servidor está reiniciando...\n\n\n", true);
-                    Thread Pg1 = new Thread(new ThreadStart(this.ServCheck));
+                    Thread Pg1 = new Thread(new ThreadStart(this.ServCheck)); //dispara thread para verificar
                     Pg1.Start();
                 }
             }
         }
 
-
+        /// <summary>
+        /// Método chamado ao reinciar o servidor. Aguarda 7 segundos e depois verifica a cada segundo se o servidor já reiniciou. 
+        /// </summary>
         public void ServCheck()
         {
             Thread.Sleep(7000);
@@ -623,14 +676,14 @@ namespace ProdanSSH
             do
             {
                 Thread.Sleep(1000);
-                check = Comando(Serv, "hostname") as string;
+                check = Comando(Serv, "hostname") as string; //O método Comando() só retornará um valor válido para a variável check quando a conexão for bem sucedida.
                 if (check != null)
                 {
                     Output("Servidor " + check + " está rodando.", true);
                 }
 
             }
-            while (check == null);
+            while (check == null); //Faz a verificação enquanto a variável check não recebe valor.
 
         }
 
@@ -639,27 +692,34 @@ namespace ProdanSSH
 
         #region PuTTY
 
+        //endereço de download do Putty
         Uri uri = new Uri("https://the.earth.li/~sgtatham/putty/latest/w32/putty.exe");
         string filename = (Application.StartupPath + "\\putty.exe");
+
+        /// <summary>
+        /// Método disparado ao clicar no botão Putty. Faz a conexão ao servidor se o aplicativo existe na pasta. Senão, dispara o método para fazer o download e depois faz a conexão.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnPutty_Click(object sender, EventArgs e)
         {
             try
             {
                 Servidor Serv = new Servidor();
                 Serv = SetaServidor(false);
-                string args = string.Format(" -ssh {0}@{1} 22 -pw {2}", Serv.user, Serv.host, Serv.pass);
+                string args = string.Format(" -ssh {0}@{1} 22 -pw {2}", Serv.user, Serv.host, Serv.pass); //argumentos de conexão ao Putty
 
-                if (File.Exists(filename))
+                if (File.Exists(filename)) //se o putty já existe
                 {
                     Output("Abrindo sessão SSH em " + Serv.host + "...\n\n\n", true);
                     Thread.Sleep(500);
-                    Process process = Process.Start(filename, args);
+                    Process process = Process.Start(filename, args); //executa aplicativo
                 }
-                else
+                else //se o Putty não existe
                 {
                     Output("PuTTY não encontrado. Efetuando download...\n\n\n", true);
                     WebClient wc = new WebClient();
-                    wc.DownloadFileAsync(uri, filename);
+                    wc.DownloadFileAsync(uri, filename); //faz o download
                     wc.DownloadProgressChanged += new DownloadProgressChangedEventHandler(wc_DownloadProgressChanged);
                     wc.DownloadFileCompleted += new AsyncCompletedEventHandler(wc_DownloadFileCompleted);
                 }
@@ -669,6 +729,12 @@ namespace ProdanSSH
                 MessageBox.Show(ex.Message.ToString());
             }
         }
+
+        /// <summary>
+        /// Controle de Progressbar
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void wc_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
         {
             progressBar1.Visible = true;
@@ -679,6 +745,11 @@ namespace ProdanSSH
             }
         }
 
+        /// <summary>
+        /// Método disparado no término do download para fazer a conexão.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void wc_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
         {
             if (e.Error == null)
@@ -698,6 +769,11 @@ namespace ProdanSSH
 
         #region Controle Janelas
 
+        /// <summary>
+        /// Clique duplo no tray
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void tray_DoubleClick(object sender, EventArgs e)
         {
             Show();
@@ -706,11 +782,21 @@ namespace ProdanSSH
             this.ShowInTaskbar = true;
         }
 
+        /// <summary>
+        /// Evento para sair do programa clicando no menu do tray
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void sairToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Application.Exit();
         }
 
+        /// <summary>
+        /// Não fecha o programa clicando no X na tela, apenas minimiza
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (e.CloseReason == CloseReason.UserClosing)
@@ -725,27 +811,37 @@ namespace ProdanSSH
 
         #region Auxiliares
 
+        //botão limpa a tela
         private void btnLimpa_Click(object sender, EventArgs e)
         {
-            rtbOutput.Clear();
+            clearTextBox();
         }
 
 
+        /// <summary>
+        /// Teclas pressionadas
+        /// </summary>
+        /// <param name="msg"></param>
+        /// <param name="keyData"></param>
+        /// <returns></returns>
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
-            if (keyData == Keys.Escape)
+            if (keyData == Keys.Escape) //ESC fecha a tela
             {
                 this.Hide();
                 return true;
             }
             if (keyData == Keys.F12) //limpa tudo
             {
+                clearTextBox();
                 textIP.Text = string.Empty;
                 textUser.Text = string.Empty;
                 textPass.Text = string.Empty;
+                textRoot.Text = string.Empty;
+                checkVerify.Checked = false;
                 Config.Default.Reset();
                 Config.Default.Save();
-                if (File.Exists(filename))
+                if (File.Exists(filename)) //deleta o putty
                 {
                     try
                     {
@@ -753,7 +849,10 @@ namespace ProdanSSH
                     }
                     catch { }
                 }
-                Output("nooooooooo!!!!\n\n", true);
+                RegistryKey remove = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+                remove.DeleteValue("Servidor Linux", false);
+                Thread cls = new Thread(new ThreadStart(this.Clear));
+                cls.Start();                
                 return true;
             }
             if (keyData == Keys.F1) //help na tela
@@ -763,8 +862,20 @@ namespace ProdanSSH
             }
             return base.ProcessCmdKey(ref msg, keyData);
         }
+        //firulas :)
+        public void Clear()
+        {
+            Output("Configurações Excluídas.", true);
+            Thread.Sleep(2000);
+            clearTextBox();
+        }
 
 
+        /// <summary>
+        /// Desabilita o campo de senha do root se o usuario for root
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void textUser_TextChanged(object sender, EventArgs e)
         {
             if (textUser.Text == "root")
@@ -783,8 +894,9 @@ namespace ProdanSSH
 
         #endregion
 
-
+        // delegate para imprimir mensagens na rich text via thread secundária
         delegate void SetTextCallback(string text, bool scroll);
-       
+        delegate void ClearTextCallback();
+
     }
 }
