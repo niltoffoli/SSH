@@ -73,16 +73,16 @@
             this.textIP.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.textIP.Name = "textIP";
             this.textIP.Size = new System.Drawing.Size(95, 20);
-            this.textIP.TabIndex = 1;
+            this.textIP.TabIndex = 0;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(1, 17);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(29, 13);
-            this.label1.TabIndex = 1;
-            this.label1.Text = "Host";
+            this.label1.Size = new System.Drawing.Size(17, 13);
+            this.label1.TabIndex = 0;
+            this.label1.Text = "IP";
             // 
             // label3
             // 
@@ -99,7 +99,7 @@
             this.label4.Location = new System.Drawing.Point(208, 17);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(77, 13);
-            this.label4.TabIndex = 4;
+            this.label4.TabIndex = 5;
             this.label4.Text = "Senha Usuário";
             // 
             // textUser
@@ -109,7 +109,7 @@
             this.textUser.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.textUser.Name = "textUser";
             this.textUser.Size = new System.Drawing.Size(100, 20);
-            this.textUser.TabIndex = 2;
+            this.textUser.TabIndex = 1;
             this.textUser.TextChanged += new System.EventHandler(this.textUser_TextChanged);
             // 
             // textPass
@@ -119,7 +119,7 @@
             this.textPass.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.textPass.Name = "textPass";
             this.textPass.Size = new System.Drawing.Size(104, 20);
-            this.textPass.TabIndex = 3;
+            this.textPass.TabIndex = 2;
             // 
             // groupBox1
             // 
@@ -134,7 +134,7 @@
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.groupBox1.Size = new System.Drawing.Size(335, 79);
-            this.groupBox1.TabIndex = 0;
+            this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             // 
             // tray
@@ -166,7 +166,7 @@
             this.checkVerify.Location = new System.Drawing.Point(479, 344);
             this.checkVerify.Name = "checkVerify";
             this.checkVerify.Size = new System.Drawing.Size(174, 17);
-            this.checkVerify.TabIndex = 10;
+            this.checkVerify.TabIndex = 8;
             this.checkVerify.Text = "Verificar horário na inicialização";
             this.checkVerify.UseVisualStyleBackColor = true;
             this.checkVerify.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
@@ -222,7 +222,7 @@
             this.btnPgReset.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnPgReset.Name = "btnPgReset";
             this.btnPgReset.Size = new System.Drawing.Size(128, 25);
-            this.btnPgReset.TabIndex = 8;
+            this.btnPgReset.TabIndex = 6;
             this.btnPgReset.Text = "Reiniciar Postgres";
             this.btnPgReset.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.btnPgReset.UseVisualStyleBackColor = false;
@@ -238,7 +238,7 @@
             this.btnShootToKill.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnShootToKill.Name = "btnShootToKill";
             this.btnShootToKill.Size = new System.Drawing.Size(128, 25);
-            this.btnShootToKill.TabIndex = 7;
+            this.btnShootToKill.TabIndex = 5;
             this.btnShootToKill.Text = "Matar Processo";
             this.btnShootToKill.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.btnShootToKill.UseVisualStyleBackColor = false;
@@ -254,7 +254,7 @@
             this.btnListproc.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnListproc.Name = "btnListproc";
             this.btnListproc.Size = new System.Drawing.Size(128, 25);
-            this.btnListproc.TabIndex = 6;
+            this.btnListproc.TabIndex = 4;
             this.btnListproc.Text = "Listar Processos";
             this.btnListproc.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.btnListproc.UseVisualStyleBackColor = false;
@@ -270,7 +270,7 @@
             this.btnRestart.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnRestart.Name = "btnRestart";
             this.btnRestart.Size = new System.Drawing.Size(128, 25);
-            this.btnRestart.TabIndex = 9;
+            this.btnRestart.TabIndex = 7;
             this.btnRestart.Text = "Reiniciar Servidor";
             this.btnRestart.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.btnRestart.UseVisualStyleBackColor = false;
@@ -282,7 +282,7 @@
             this.btnLimpa.Location = new System.Drawing.Point(80, 338);
             this.btnLimpa.Name = "btnLimpa";
             this.btnLimpa.Size = new System.Drawing.Size(27, 26);
-            this.btnLimpa.TabIndex = 11;
+            this.btnLimpa.TabIndex = 9;
             this.btnLimpa.UseVisualStyleBackColor = true;
             this.btnLimpa.Click += new System.EventHandler(this.btnLimpa_Click);
             // 
@@ -296,7 +296,7 @@
             this.btnVerifica.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnVerifica.Name = "btnVerifica";
             this.btnVerifica.Size = new System.Drawing.Size(128, 25);
-            this.btnVerifica.TabIndex = 5;
+            this.btnVerifica.TabIndex = 3;
             this.btnVerifica.Text = "Verificar Horario";
             this.btnVerifica.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.btnVerifica.UseVisualStyleBackColor = false;
@@ -309,7 +309,7 @@
             this.btnPutty.Location = new System.Drawing.Point(8, 338);
             this.btnPutty.Name = "btnPutty";
             this.btnPutty.Size = new System.Drawing.Size(66, 26);
-            this.btnPutty.TabIndex = 12;
+            this.btnPutty.TabIndex = 10;
             this.btnPutty.Text = "PuTTY";
             this.btnPutty.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.btnPutty.UseVisualStyleBackColor = true;
@@ -332,7 +332,7 @@
             this.groupBox2.Location = new System.Drawing.Point(349, 4);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(141, 79);
-            this.groupBox2.TabIndex = 16;
+            this.groupBox2.TabIndex = 2;
             this.groupBox2.TabStop = false;
             // 
             // textRoot
@@ -342,7 +342,7 @@
             this.textRoot.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.textRoot.Name = "textRoot";
             this.textRoot.Size = new System.Drawing.Size(104, 20);
-            this.textRoot.TabIndex = 4;
+            this.textRoot.TabIndex = 1;
             this.textRoot.UseSystemPasswordChar = true;
             // 
             // lblRoot
@@ -352,7 +352,7 @@
             this.lblRoot.Location = new System.Drawing.Point(15, 17);
             this.lblRoot.Name = "lblRoot";
             this.lblRoot.Size = new System.Drawing.Size(69, 13);
-            this.lblRoot.TabIndex = 6;
+            this.lblRoot.TabIndex = 1;
             this.lblRoot.Text = "Senha root";
             // 
             // contextProcList
@@ -403,7 +403,7 @@
             this.MaximizeBox = false;
             this.Name = "FrmSSH";
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
-            this.Text = "ProdanSSH";
+            this.Text = "Prodan SSH";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();

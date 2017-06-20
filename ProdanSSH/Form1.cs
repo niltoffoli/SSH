@@ -102,13 +102,12 @@ namespace ProdanSSH
             if (!Serv.Equals(null))
             {
                 GravaConfig(Serv);
-                ComparaTempo(Serv);
+                ComparaTempo(Serv);                
                 return true;
             }
             else return false;
 
         }
-
 
         #endregion
 
@@ -298,8 +297,7 @@ namespace ProdanSSH
             }
             catch (Exception exc)
             {
-                MessageBox.Show(exc.Message);
-                return null;
+                return exc;
             }
         }
 
@@ -308,7 +306,7 @@ namespace ProdanSSH
         /// </summary>
         /// <param name="Serv"></param>
         /// <param name="input"></param>
-        public void ComandoRoot(Servidor Serv, string input)
+        public string ComandoRoot(Servidor Serv, string input)
         {
 
             var client = Conecta(Serv) as SshClient;
@@ -326,14 +324,15 @@ namespace ProdanSSH
             shellStream.WriteLine("su -"); // para escrever o comando
 
             rep = shellStream.Expect(new Regex(@"[:$#]")); // aguarda o terminal pedir a senha
-            shellStream.WriteLine(Serv.rootpass);
+            shellStream.WriteLine(Serv.rootpass); // passa a senha
 
-            rep = shellStream.Expect(new Regex(@"([#])")); // aguarda o login como root para excutar o comando
-            shellStream.WriteLine(input);
+            rep = shellStream.Expect(new Regex(@"([$#])")); // aguarda o login como root para excutar o comando
+            if (rep.Contains("failure")) { Output(rep + Environment.NewLine, true); } // se a senha estiver errada o terminal acusa "Autentication failure"
+            shellStream.WriteLine(input); // envia comando
 
-            rep = shellStream.Expect(new Regex(@"([#])"));
+            rep = shellStream.Expect(new Regex(@"([$#])"));
             Output(rep+Environment.NewLine+Environment.NewLine, true); // imprime o fluxo de dados
-
+            return rep;
         }
 
 
@@ -415,35 +414,46 @@ namespace ProdanSSH
         /// Compara o horário do servidor com o horário oficial da timezone buscado na internet
         /// </summary>
         /// <param name="Serv">Objeto com os dados de conexão ao servidor</param>
-        public void ComparaTempo(Servidor Serv)
+        public object ComparaTempo(Servidor Serv)
         {
             try
             {
-                Output("Conectando ao servidor " + Comando(Serv, "hostname") + Environment.NewLine + Environment.NewLine, true);
-                DateTime dtserv = DataServ(Serv);
-                Output("Horario em " + Serv.host + " : " + dtserv.ToString() + Environment.NewLine + Environment.NewLine, true);
-                DateTime dt_oficial = GetTime();
-                Output("Horario oficial: " + dt_oficial.ToString() + Environment.NewLine, true);
-                TimeSpan difer = (Convert.ToDateTime(dt_oficial) - Convert.ToDateTime(dtserv)).Duration();
 
-                if (difer > TimeSpan.FromSeconds(1))
+                var aux = Comando(Serv, "hostname");
+                if (aux.GetType().Name != "Exception")
                 {
-                    string cmd = string.Format("date -s '{0}-{1}-{2} {3}:{4}:{5}'", dt_oficial.Year, dt_oficial.Month.ToString().PadLeft(2, '0'), dt_oficial.Day.ToString().PadLeft(2, '0'), dt_oficial.Hour, dt_oficial.Minute, dt_oficial.Second);
-                    Output("Corrigindo horário......." + Environment.NewLine + Environment.NewLine, true);
-                    var result = Comando(Serv, cmd);
-                    if (!result.Equals(null))
-                    {
-                        Comando(Serv, "hwclock -w");
-                        Output("Horário do linux alterado para\n" + result.ToString().TrimEnd() + Environment.NewLine + Environment.NewLine, true);
-                    }
-                }
-                else Output("Horário está dentro da tolerância, não será alterado." + Environment.NewLine + Environment.NewLine + Environment.NewLine, true);
 
+                    Output("Conectando ao servidor " + aux + Environment.NewLine + Environment.NewLine, true);
+
+                    DateTime dtserv = DataServ(Serv);
+                    Output("Horario em " + Serv.host + " : " + dtserv.ToString() + Environment.NewLine + Environment.NewLine, true);
+                    DateTime dt_oficial = GetTime();
+                    Output("Horario oficial: " + dt_oficial.ToString() + Environment.NewLine, true);
+                    TimeSpan difer = (Convert.ToDateTime(dt_oficial) - Convert.ToDateTime(dtserv)).Duration();
+
+                    if (difer > TimeSpan.FromSeconds(1))
+                    {
+                        string cmd = string.Format("date -s '{0}-{1}-{2} {3}:{4}:{5}'", dt_oficial.Year, dt_oficial.Month.ToString().PadLeft(2, '0'), dt_oficial.Day.ToString().PadLeft(2, '0'), dt_oficial.Hour, dt_oficial.Minute, dt_oficial.Second);
+                        Output("Corrigindo horário......." + Environment.NewLine + Environment.NewLine, true);
+                        var result = Comando(Serv, cmd);
+                        if (!result.Equals(null))
+                        {
+                            Comando(Serv, "hwclock -w");
+                            Output("Horário do linux alterado para\n" + result.ToString().TrimEnd() + Environment.NewLine + Environment.NewLine, true);
+                        }
+                        return result;
+                    }
+                    else Output("Horário está dentro da tolerância, não será alterado." + Environment.NewLine + Environment.NewLine + Environment.NewLine, true);
+                    return null;
+                }
+                throw new Exception();
             }
             catch (Exception)
             {
                 Output("Não foi possível verificar o horário. Verifique a conexão com o servidor." + Environment.NewLine + Environment.NewLine + Environment.NewLine, true);
+                return null;
             }
+
         }
 
         /// <summary>
@@ -571,13 +581,21 @@ namespace ProdanSSH
         /// <param name="e"></param>
         private void btnShootToKill_Click(object sender, EventArgs e)
         {
-            Point screenPoint = btnShootToKill.PointToScreen(new Point(btnShootToKill.Left, btnShootToKill.Bottom));
+            if (textUser.Text != "root" && string.IsNullOrEmpty(textRoot.Text))
+            {
+                MessageBox.Show("Comando necessita acesso superusuario. Informe a senha root.");
+                textRoot.Focus();
+            }
+            else
+            {
+                Point screenPoint = btnShootToKill.PointToScreen(new Point(btnShootToKill.Left, btnShootToKill.Bottom));
 
-            if (screenPoint.Y + contextProcKill.Size.Height > Screen.PrimaryScreen.WorkingArea.Height)
-                contextProcKill.Show(btnShootToKill, new Point(0, -contextProcKill.Size.Height));
-            else contextProcKill.Show(btnShootToKill, new Point(0, btnShootToKill.Height));
+                if (screenPoint.Y + contextProcKill.Size.Height > Screen.PrimaryScreen.WorkingArea.Height)
+                    contextProcKill.Show(btnShootToKill, new Point(0, -contextProcKill.Size.Height));
+                else contextProcKill.Show(btnShootToKill, new Point(0, btnShootToKill.Height));
 
-            toolStripTextBox1.Focus();
+                toolStripTextBox1.Focus();
+            }
         }
 
         /// <summary>
@@ -610,18 +628,26 @@ namespace ProdanSSH
         /// <param name="e"></param>
         private void btnPgReset_Click(object sender, EventArgs e)
         {
-            DialogResult dialogResult = MessageBox.Show("Todas as conexões ao banco de dados serão encerradas. Continuar?", "Reiniciar Postgres?", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-            if (dialogResult == DialogResult.Yes)
+            if (textUser.Text != "root" && string.IsNullOrEmpty(textRoot.Text))
             {
-                Servidor Serv = new Servidor();
-                Serv = SetaServidor(false);
-                Output("Reiniciando Postgres..." + Environment.NewLine + Environment.NewLine, true);
-                ComandoRoot(Serv, "/etc/rc.d/rc.postgres stop");
-                Thread.Sleep(1000);
-                ComandoRoot(Serv, "/etc/rc.d/rc.postgres start");
-                Thread.Sleep(1000);
-                Thread Pg = new Thread(new ThreadStart(this.PgCheck));
-                Pg.Start();
+                MessageBox.Show("Comando necessita acesso superusuario. Informe a senha root.");
+                textRoot.Focus();
+            }
+            else
+            {
+                DialogResult dialogResult = MessageBox.Show("Todas as conexões ao banco de dados serão encerradas. Continuar?", "Reiniciar Postgres?", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                if (dialogResult == DialogResult.Yes)
+                {
+                    Servidor Serv = new Servidor();
+                    Serv = SetaServidor(false);
+                    Output("Reiniciando Postgres..." + Environment.NewLine + Environment.NewLine, true);
+                    ComandoRoot(Serv, "/etc/rc.d/rc.postgres stop");
+                    Thread.Sleep(1000);
+                    ComandoRoot(Serv, "/etc/rc.d/rc.postgres start");
+                    Thread.Sleep(1000);
+                    Thread Pg = new Thread(new ThreadStart(this.PgCheck));
+                    Pg.Start();
+                }
             }
         }
 
@@ -647,18 +673,26 @@ namespace ProdanSSH
         /// <param name="e"></param>
         private void btnRestart_Click(object sender, EventArgs e)
         {
-            DialogResult dialogResult = MessageBox.Show("Reiniciar o Servidor?", "Reiniciar", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            if (dialogResult == DialogResult.Yes) //confirmação
+            if (textUser.Text != "root" && string.IsNullOrEmpty(textRoot.Text))
             {
-                DialogResult dialogResult2 = MessageBox.Show("Tem certeza que deseja Reiniciar o Servidor??", "Reiniciar", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-                if (dialogResult2 == DialogResult.Yes)
+                MessageBox.Show("Comando necessita acesso superusuario. Informe a senha root.");
+                textRoot.Focus();
+            }
+            else
+            {
+                DialogResult dialogResult = MessageBox.Show("Reiniciar o Servidor?", "Reiniciar", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (dialogResult == DialogResult.Yes) //confirmação
                 {
-                    Servidor Serv = new Servidor();
-                    Serv = SetaServidor(false);
-                    ComandoRoot(Serv, "reboot");
-                    Output("O servidor está reiniciando...\n\n\n", true);
-                    Thread Pg1 = new Thread(new ThreadStart(this.ServCheck)); //dispara thread para verificar
-                    Pg1.Start();
+                    DialogResult dialogResult2 = MessageBox.Show("Tem certeza que deseja Reiniciar o Servidor??", "Reiniciar", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                    if (dialogResult2 == DialogResult.Yes)
+                    {
+                        Servidor Serv = new Servidor();
+                        Serv = SetaServidor(false);
+                        ComandoRoot(Serv, "reboot");
+                        Output("O servidor está reiniciando...\n\n\n", true);
+                        Thread Pg1 = new Thread(new ThreadStart(this.ServCheck)); //dispara thread para verificar
+                        Pg1.Start();
+                    }
                 }
             }
         }
@@ -831,7 +865,7 @@ namespace ProdanSSH
                 this.Hide();
                 return true;
             }
-            if (keyData == Keys.F12) //limpa tudo
+            if (keyData == (Keys.Control | Keys.F12)) //limpa tudo
             {
                 clearTextBox();
                 textIP.Text = string.Empty;
@@ -857,8 +891,12 @@ namespace ProdanSSH
             }
             if (keyData == Keys.F1) //help na tela
             {
-                Output("\n\n-----------------------------------------------------------------------------------------\n\nProdanSSH - Nilton Toffoli - HELP\n\n-----------------------------------------------------------------------------------------\n\n                    Configurações:\n\nAs configurações ficam salvas automaticamente após a primeira conexão válida.\n\n- Host: Endereço IP do servidor.\n- Usuário: Usuário para acesso ao linux\n- Senha: Senha do usuário do linux.\n- Verificar horario na inicialização: Inicia programa com o Windows e faz a verificação\n- F12: Limpar configurações\n\n                    Funções:\n\n- Verificar Horário: Busca o horário atual na internet e compara com a data/hora do servidor. Altera automaticamente se estiver fora da tolerância de 1 min.\n- Lista Processos: Dispara o comando 'ps -ax' e lista os processos do servidor.\n- Matar Processo: Finaliza Processos (digite o PID do processo e tecle ENTER).\n- Reiniciar Postgres: Dispara o comando para reiniciar o Postgres.\n- Reinciar Servidor: Dispara o comando 'reboot' e reinciar o servidor.\n- PuTTY: Executa e conecta o PuTTY no servidor expecificado. Faz o download automático do PuTTY se esse não for encontrado.\n\n-----------------------------------------------------------------------------------------\n\n\n        Limpa Tela\n\n            |\n            |\n            |", false);
+                Output("\n\n-----------------------------------------------------------------------------------------\n\nProdanSSH - Nilton Toffoli - HELP\n\n-----------------------------------------------------------------------------------------\n\n                    Configurações:\n\nAs configurações ficam salvas automaticamente após a primeira conexão válida.\n\n- Host: Endereço IP do servidor.\n- Usuário: Usuário para acesso ao linux\n- Senha: Senha do usuário do linux.\n- Verificar horario na inicialização: Inicia programa com o Windows e faz a verificação\n- F2: Limpa a tela.\n- CTRL+F12: Limpa todas as configurações.\n\n                    Funções:\n\n- Verificar Horário: Busca o horário atual na internet e compara com a data/hora do servidor. Altera automaticamente se estiver fora da tolerância de 1 min.\n- Lista Processos: Dispara o comando 'ps -ax' e lista os processos do servidor.\n- Matar Processo: Finaliza Processos (digite o PID do processo e tecle ENTER).\n- Reiniciar Postgres: Dispara o comando para reiniciar o Postgres.\n- Reinciar Servidor: Dispara o comando 'reboot' e reinciar o servidor.\n- PuTTY: Executa e conecta o PuTTY no servidor expecificado. Faz o download automático do PuTTY se esse não for encontrado.\n\n-----------------------------------------------------------------------------------------\n\n\n        Limpa Tela\n\n            |\n            |\n            |", false);
                 return true;
+            }
+            if (keyData == Keys.F2) //teste autoexec
+            {
+                clearTextBox();
             }
             return base.ProcessCmdKey(ref msg, keyData);
         }
