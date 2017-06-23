@@ -53,17 +53,16 @@
             this.btnVerifica = new System.Windows.Forms.Button();
             this.btnPutty = new System.Windows.Forms.Button();
             this.lblHelp = new System.Windows.Forms.Label();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.textRoot = new System.Windows.Forms.TextBox();
-            this.lblRoot = new System.Windows.Forms.Label();
             this.contextProcList = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.todosOsProcessosToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.somentePostgresToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.contextRtbOutput = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.copiarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox1.SuspendLayout();
             this.contextBandeja.SuspendLayout();
             this.contextProcKill.SuspendLayout();
-            this.groupBox2.SuspendLayout();
             this.contextProcList.SuspendLayout();
+            this.contextRtbOutput.SuspendLayout();
             this.SuspendLayout();
             // 
             // textIP
@@ -74,6 +73,7 @@
             this.textIP.Name = "textIP";
             this.textIP.Size = new System.Drawing.Size(95, 20);
             this.textIP.TabIndex = 0;
+            this.textIP.Leave += new System.EventHandler(this.textIP_Leave);
             // 
             // label1
             // 
@@ -110,7 +110,6 @@
             this.textUser.Name = "textUser";
             this.textUser.Size = new System.Drawing.Size(100, 20);
             this.textUser.TabIndex = 1;
-            this.textUser.TextChanged += new System.EventHandler(this.textUser_TextChanged);
             // 
             // textPass
             // 
@@ -175,7 +174,7 @@
             // 
             this.rtbOutput.BackColor = System.Drawing.SystemColors.InfoText;
             this.rtbOutput.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.rtbOutput.DetectUrls = false;
+            this.rtbOutput.ContextMenuStrip = this.contextRtbOutput;
             this.rtbOutput.Font = new System.Drawing.Font("Lucida Console", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.rtbOutput.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.rtbOutput.Location = new System.Drawing.Point(8, 90);
@@ -185,6 +184,7 @@
             this.rtbOutput.TabIndex = 0;
             this.rtbOutput.TabStop = false;
             this.rtbOutput.Text = "";
+            this.rtbOutput.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(this.rtbOutput_LinkClicked);
             // 
             // progressBar1
             // 
@@ -211,6 +211,8 @@
             this.toolStripTextBox1.Tag = "";
             this.toolStripTextBox1.ToolTipText = "Numero do Processo";
             this.toolStripTextBox1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.toolStripTextBox1_KeyDown);
+            this.toolStripTextBox1.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.toolStripTextBox1_KeyPress);
+            this.toolStripTextBox1.TextChanged += new System.EventHandler(this.toolStripTextBox1_TextChanged);
             // 
             // btnPgReset
             // 
@@ -266,7 +268,7 @@
             this.btnRestart.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnRestart.Image = global::ProdanSSH.Properties.Resources.rest;
             this.btnRestart.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnRestart.Location = new System.Drawing.Point(659, 307);
+            this.btnRestart.Location = new System.Drawing.Point(659, 222);
             this.btnRestart.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnRestart.Name = "btnRestart";
             this.btnRestart.Size = new System.Drawing.Size(128, 25);
@@ -325,36 +327,6 @@
             this.lblHelp.TabIndex = 15;
             this.lblHelp.Text = "F1: Ajuda";
             // 
-            // groupBox2
-            // 
-            this.groupBox2.Controls.Add(this.textRoot);
-            this.groupBox2.Controls.Add(this.lblRoot);
-            this.groupBox2.Location = new System.Drawing.Point(349, 4);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(141, 79);
-            this.groupBox2.TabIndex = 2;
-            this.groupBox2.TabStop = false;
-            // 
-            // textRoot
-            // 
-            this.textRoot.BackColor = System.Drawing.Color.FloralWhite;
-            this.textRoot.Location = new System.Drawing.Point(18, 32);
-            this.textRoot.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.textRoot.Name = "textRoot";
-            this.textRoot.Size = new System.Drawing.Size(104, 20);
-            this.textRoot.TabIndex = 1;
-            this.textRoot.UseSystemPasswordChar = true;
-            // 
-            // lblRoot
-            // 
-            this.lblRoot.AutoSize = true;
-            this.lblRoot.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblRoot.Location = new System.Drawing.Point(15, 17);
-            this.lblRoot.Name = "lblRoot";
-            this.lblRoot.Size = new System.Drawing.Size(69, 13);
-            this.lblRoot.TabIndex = 1;
-            this.lblRoot.Text = "Senha root";
-            // 
             // contextProcList
             // 
             this.contextProcList.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -377,6 +349,20 @@
             this.somentePostgresToolStripMenuItem.Text = "Somente Postgres";
             this.somentePostgresToolStripMenuItem.Click += new System.EventHandler(this.somentePostgresToolStripMenuItem_Click);
             // 
+            // contextRtbOutput
+            // 
+            this.contextRtbOutput.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.copiarToolStripMenuItem});
+            this.contextRtbOutput.Name = "contextRtbOutput";
+            this.contextRtbOutput.Size = new System.Drawing.Size(153, 48);
+            // 
+            // copiarToolStripMenuItem
+            // 
+            this.copiarToolStripMenuItem.Name = "copiarToolStripMenuItem";
+            this.copiarToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.copiarToolStripMenuItem.Text = "Copiar";
+            this.copiarToolStripMenuItem.Click += new System.EventHandler(this.copiarToolStripMenuItem_Click);
+            // 
             // FrmSSH
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -384,7 +370,6 @@
             this.BackColor = System.Drawing.Color.Snow;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.ClientSize = new System.Drawing.Size(799, 384);
-            this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.lblHelp);
             this.Controls.Add(this.btnPgReset);
             this.Controls.Add(this.btnShootToKill);
@@ -410,9 +395,8 @@
             this.contextBandeja.ResumeLayout(false);
             this.contextProcKill.ResumeLayout(false);
             this.contextProcKill.PerformLayout();
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
             this.contextProcList.ResumeLayout(false);
+            this.contextRtbOutput.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -443,12 +427,11 @@
         private System.Windows.Forms.ToolStripTextBox toolStripTextBox1;
         private System.Windows.Forms.Button btnPgReset;
         private System.Windows.Forms.Label lblHelp;
-        private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.TextBox textRoot;
-        private System.Windows.Forms.Label lblRoot;
         private System.Windows.Forms.ContextMenuStrip contextProcList;
         private System.Windows.Forms.ToolStripMenuItem todosOsProcessosToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem somentePostgresToolStripMenuItem;
+        private System.Windows.Forms.ContextMenuStrip contextRtbOutput;
+        private System.Windows.Forms.ToolStripMenuItem copiarToolStripMenuItem;
     }
 }
 

@@ -20,3 +20,4 @@ C:\Users\Nilton\Documents\GitHub\ProdanSSH\ProdanSSH\obj\Debug\ProdanSSH.csprojR
 C:\Users\Nilton\Documents\GitHub\ProdanSSH\ProdanSSH\obj\Debug\ProdanSSH.Properties.Resources.resources
 C:\Users\Nilton\Documents\GitHub\ProdanSSH\ProdanSSH\obj\Debug\ProdanSSH.csproj.GenerateResource.Cache
 C:\Users\Nilton\Documents\GitHub\ProdanSSH\ProdanSSH\obj\Debug\ProdanSSH.FrmSSH.resources
+C:\Users\Nilton\Documents\GitHub\ProdanSSH\ProdanSSH\obj\Debug\ProdanSSH.FrmRootPass.resources
