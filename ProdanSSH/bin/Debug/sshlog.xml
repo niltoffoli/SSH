@@ -1,0 +1,215 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <DADOS_COMANDO>
+    <Data>27-06-2017</Data>
+    <Hora>18:40</Hora>
+    <Servidor />
+    <Usuário />
+    <IP_Terminal>192.168.10.149</IP_Terminal>
+    <Comando>-----CONFIGURAÇÕES EXCLUÍDAS-----</Comando>
+    <Resultado></Resultado>
+  </DADOS_COMANDO>
+  <DADOS_COMANDO>
+    <Data>27-06-2017</Data>
+    <Hora>18:40</Hora>
+    <Servidor>192.168.10.90</Servidor>
+    <Usuário>root</Usuário>
+    <IP_Terminal>192.168.10.149</IP_Terminal>
+    <Comando>ps -ax</Comando>
+    <Resultado>  PID TTY      STAT   TIME COMMAND
+    1 ?        Ss     0:01 init [3]       
+    2 ?        S      0:00 [kthreadd]
+    3 ?        S      0:00 [migration/0]
+    4 ?        S      0:00 [ksoftirqd/0]
+    5 ?        S      0:00 [watchdog/0]
+    6 ?        S      0:00 [migration/1]
+    7 ?        S      0:00 [ksoftirqd/1]
+    8 ?        S      0:00 [watchdog/1]
+    9 ?        S      0:00 [migration/2]
+   10 ?        S      0:00 [ksoftirqd/2]
+   11 ?        S      0:00 [watchdog/2]
+   12 ?        S      0:00 [migration/3]
+   13 ?        S      0:00 [ksoftirqd/3]
+   14 ?        S      0:00 [watchdog/3]
+   15 ?        S      0:02 [events/0]
+   16 ?        S      0:00 [events/1]
+   17 ?        S      0:00 [events/2]
+   18 ?        S      0:00 [events/3]
+   19 ?        S      0:00 [khelper]
+   53 ?        S      0:00 [netns]
+   56 ?        S      0:00 [async/mgr]
+   57 ?        S      0:00 [pm]
+  267 ?        S      0:00 [sync_supers]
+  269 ?        S      0:00 [bdi-default]
+  271 ?        S      0:00 [kblockd/0]
+  272 ?        S      0:00 [kblockd/1]
+  273 ?        S      0:00 [kblockd/2]
+  274 ?        S      0:00 [kblockd/3]
+  276 ?        S      0:00 [kacpid]
+  277 ?        S      0:00 [kacpi_notify]
+  278 ?        S      0:00 [kacpi_hotplug]
+  390 ?        S      0:00 [ata/0]
+  391 ?        S      0:00 [ata/1]
+  392 ?        S      0:00 [ata/2]
+  393 ?        S      0:00 [ata/3]
+  394 ?        S      0:00 [ata_aux]
+  395 ?        S      0:00 [ksuspend_usbd]
+  400 ?        S      0:00 [khubd]
+  403 ?        S      0:00 [kseriod]
+  437 ?        S      0:00 [rpciod/0]
+  438 ?        S      0:00 [rpciod/1]
+  439 ?        S      0:00 [rpciod/2]
+  440 ?        S      0:00 [rpciod/3]
+  486 ?        S      0:00 [khungtaskd]
+  487 ?        S      0:00 [kswapd0]
+  537 ?        S      0:00 [aio/0]
+  538 ?        S      0:00 [aio/1]
+  539 ?        S      0:00 [aio/2]
+  540 ?        S      0:00 [aio/3]
+  563 ?        S      0:00 [nfsiod]
+  574 ?        S      0:00 [jfsIO]
+  575 ?        S      0:00 [jfsCommit]
+  576 ?        S      0:00 [jfsCommit]
+  577 ?        S      0:00 [jfsCommit]
+  578 ?        S      0:00 [jfsCommit]
+  579 ?        S      0:00 [jfsSync]
+  587 ?        S      0:00 [xfs_mru_cache]
+  588 ?        S      0:00 [xfslogd/0]
+  589 ?        S      0:00 [xfslogd/1]
+  590 ?        S      0:00 [xfslogd/2]
+  591 ?        S      0:00 [xfslogd/3]
+  592 ?        S      0:00 [xfsdatad/0]
+  593 ?        S      0:00 [xfsdatad/1]
+  594 ?        S      0:00 [xfsdatad/2]
+  595 ?        S      0:00 [xfsdatad/3]
+  596 ?        S      0:00 [xfsconvertd/0]
+  597 ?        S      0:00 [xfsconvertd/1]
+  598 ?        S      0:00 [xfsconvertd/2]
+  599 ?        S      0:00 [xfsconvertd/3]
+  602 ?        S      0:00 [ocfs2_wq]
+  603 ?        S      0:00 [o2quot/0]
+  604 ?        S      0:00 [o2quot/1]
+  605 ?        S      0:00 [o2quot/2]
+  606 ?        S      0:00 [o2quot/3]
+  610 ?        S      0:00 [user_dlm]
+  615 ?        S      0:00 [glock_workqueue]
+  616 ?        S      0:00 [glock_workqueue]
+  617 ?        S      0:00 [glock_workqueue]
+  618 ?        S      0:00 [glock_workqueue]
+  619 ?        S      0:00 [delete_workqueu]
+  620 ?        S      0:00 [delete_workqueu]
+  621 ?        S      0:00 [delete_workqueu]
+  622 ?        S      0:00 [delete_workqueu]
+  626 ?        S&lt;     0:00 [kslowd000]
+  627 ?        S&lt;     0:00 [kslowd001]
+  629 ?        S      0:00 [crypto/0]
+  630 ?        S      0:00 [crypto/1]
+  631 ?        S      0:00 [crypto/2]
+  632 ?        S      0:00 [crypto/3]
+  895 ?        S      0:00 [cciss_scan]
+  901 ?        S      0:00 [scsi_tgtd/0]
+  902 ?        S      0:00 [scsi_tgtd/1]
+  903 ?        S      0:00 [scsi_tgtd/2]
+  904 ?        S      0:00 [scsi_tgtd/3]
+  918 ?        S      0:00 [iscsi_eh]
+  926 ?        S      0:00 [fc_exch_workque]
+  927 ?        S      0:00 [fc_rport_eq]
+  928 ?        S&lt;     0:00 [fcoethread/0]
+  929 ?        S&lt;     0:00 [fcoethread/1]
+  930 ?        S&lt;     0:00 [fcoethread/2]
+  931 ?        S&lt;     0:00 [fcoethread/3]
+  934 ?        S      0:00 [fnic_event_wq]
+  952 ?        S      0:00 [hpsa_scan]
+  992 ?        S      0:00 [scsi_eh_0]
+  995 ?        S      0:00 [scsi_eh_1]
+ 1000 ?        S      0:00 [scsi_eh_2]
+ 1003 ?        S      0:00 [scsi_eh_3]
+ 1015 ?        S      0:00 [scsi_eh_4]
+ 1018 ?        S      0:00 [scsi_eh_5]
+ 1065 ?        S      0:00 [exec-osm/0]
+ 1066 ?        S      0:00 [exec-osm/1]
+ 1067 ?        S      0:00 [exec-osm/2]
+ 1068 ?        S      0:00 [exec-osm/3]
+ 1074 ?        S      0:00 [block-osm/0]
+ 1075 ?        S      0:00 [block-osm/1]
+ 1076 ?        S      0:00 [block-osm/2]
+ 1077 ?        S      0:00 [block-osm/3]
+ 1136 ?        S      0:00 [kstriped]
+ 1138 ?        S      0:00 [ksnapd]
+ 1154 ?        S      0:03 [jbd2/sda1-8]
+ 1155 ?        S      0:00 [ext4-dio-unwrit]
+ 1156 ?        S      0:00 [ext4-dio-unwrit]
+ 1157 ?        S      0:00 [ext4-dio-unwrit]
+ 1158 ?        S      0:00 [ext4-dio-unwrit]
+ 1161 ?        S      0:01 [flush-8:0]
+ 1187 ?        S&lt;s    0:00 /sbin/udevd --daemon
+ 1368 ?        S      0:00 [kpsmoused]
+ 1382 ?        S      0:00 [hd-audio0]
+ 1479 ?        Ss     0:00 /usr/sbin/syslogd
+ 1483 ?        Ss     0:00 /usr/sbin/klogd -c 3 -x
+ 1615 ?        Ss     0:00 /usr/sbin/inetd
+ 1624 ?        Ss     0:00 /usr/sbin/sshd
+ 1631 ?        Ss     0:00 /usr/sbin/acpid
+ 1642 ?        Ss     0:00 /usr/bin/dbus-daemon --system
+ 1647 ?        Ss     0:00 /usr/sbin/hald --daemon=yes
+ 1648 ?        S      0:00 hald-runner
+ 1670 ?        S      0:00 hald-addon-input: Listening on /dev/input/event1 /dev/input/event2
+ 1679 ?        S      0:00 hald-addon-acpi: listening on acpid socket /var/run/acpid.socket
+ 1698 ?        Ss     0:00 /usr/sbin/crond -l10
+ 1700 ?        Ss     0:00 /usr/sbin/atd -b 15 -l 1
+ 1715 ?        Ss     0:00 /usr/sbin/smbd -D
+ 1717 ?        Ss     0:01 /usr/sbin/nmbd -D
+ 1719 ?        Ss     0:00 /usr/sbin/gpm -m /dev/mouse -t imps2
+ 1722 ?        S      0:00 /usr/sbin/smbd -D
+ 1726 ?        Sl     0:49 /usr/local/grokbkp/aua/jvm/bin/auaJW -Xrs -Djava.library.path=./lib -cp ./lib:/usr/local/grokbkp/aua/lib/jdom.jar:./lib/log4j.jar:./lib/aua.jar:./ant/lib/ant.jar:./ant/lib/ant-launcher.jar:./ant/lib/xercesImpl.jar:./ant/lib/xml-apis.jar auas config.xml update
+ 1773 ?        Sl     0:39 /usr/local/grokbkp/jvm/bin/bschJW -Xrs -Xms128m -Xmx768m -client -Djava.library.path=. -cp .:./obcs.jar:./obc-lib.jar obcs /usr/local/grokbkp
+ 1788 ?        S      0:00 /usr/local/pgsql/bin/postmaster -D /usr/local/pgsql/data
+ 1789 tty1     Ss+    0:00 /sbin/agetty 38400 tty1 linux
+ 1790 tty2     Ss+    0:00 /sbin/agetty 38400 tty2 linux
+ 1791 tty3     Ss+    0:00 /sbin/agetty 38400 tty3 linux
+ 1792 tty4     Ss+    0:00 /sbin/agetty 38400 tty4 linux
+ 1793 tty5     Ss+    0:00 /sbin/agetty 38400 tty5 linux
+ 1794 tty6     Ss+    0:00 /sbin/agetty 38400 tty6 linux
+ 1795 ?        S&lt;     0:00 /sbin/udevd --daemon
+ 1796 ?        S&lt;     0:00 /sbin/udevd --daemon
+ 1806 ?        Ss     0:10 postgres: writer process                                
+ 1807 ?        Ss     1:46 postgres: stats collector process                       
+ 3190 ?        S      0:00 /usr/sbin/smbd -D
+ 5754 ?        S      0:00 /usr/sbin/smbd -D
+ 5755 ?        S      0:00 /usr/sbin/smbd -D
+ 5758 ?        S      0:00 /usr/sbin/smbd -D
+ 5760 ?        S      0:00 /usr/sbin/smbd -D
+ 5829 ?        Ss     0:00 postgres: RICARDO PgBarbierimatriz 192.168.10.115(1589) idle in transaction
+ 6021 ?        Ss     0:00 sshd: root       
+ 6023 ?        Ss     0:00 sshd: root@notty 
+ 6025 ?        Rs     0:00 ps -ax
+</Resultado>
+  </DADOS_COMANDO>
+  <DADOS_COMANDO>
+    <Data>27-06-2017</Data>
+    <Hora>18:39</Hora>
+    <Servidor />
+    <Usuário />
+    <IP_Terminal>192.168.10.149</IP_Terminal>
+    <Comando>-----CONFIGURAÇÕES SALVAS-----</Comando>
+    <Resultado></Resultado>
+  </DADOS_COMANDO>
+  <DADOS_COMANDO>
+    <Data>27-06-2017</Data>
+    <Hora>18:39</Hora>
+    <Servidor />
+    <Usuário />
+    <IP_Terminal>192.168.10.149</IP_Terminal>
+    <Comando>-----SERVIDOR CONFIGURADO VIA ODBC-----</Comando>
+    <Resultado></Resultado>
+  </DADOS_COMANDO>
+  <DADOS_COMANDO>
+    <Data>27-06-2017</Data>
+    <Hora>18:38</Hora>
+    <Servidor />
+    <Usuário />
+    <IP_Terminal>192.168.10.149</IP_Terminal>
+    <Comando>-----CONFIGURAÇÕES EXCLUÍDAS-----</Comando>
+    <Resultado />
+  </DADOS_COMANDO>
+</root>

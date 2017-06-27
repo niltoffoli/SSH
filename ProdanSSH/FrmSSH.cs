@@ -1,4 +1,5 @@
 ﻿// Programado por Nilton C. Toffoli Junior
+// Projeto no GitHub: https://github.com/niltoffoli/SSH
 
 using System;
 using System.ComponentModel;
@@ -16,6 +17,9 @@ using System.Diagnostics;
 using System.Threading;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Xml;
+using System.Xml.Linq;
+using System.Text;
 
 namespace ProdanSSH
 {
@@ -31,8 +35,6 @@ namespace ProdanSSH
             if (args == "-auto") //argumento de disparo automático
             {
                 WindowState = FormWindowState.Minimized;
-                rtbOutput.SelectionProtected = true;
-                this.Visible = false;
                 this.ShowInTaskbar = false;
                 tray.Visible = true; // tray é o nome do componente do ícone da bandeja
                 this.Hide();
@@ -81,17 +83,21 @@ namespace ProdanSSH
         /// Método de que controla a execução automática na inicialização
         /// </summary>
         /// <returns></returns>
-        public bool AutoExec()
+        public void AutoExec()
         {
-            Servidor Serv = SetaServidor(true);
-
-            if (!Serv.Equals(null))
+            try
             {
-                GravaConfig(Serv);
-                ComparaTempo(Serv);                
-                return true;
+                Servidor Serv = SetaServidor(true);
+
+                if (!Serv.Equals(null))
+                {
+                    CriaHistorico(null, "-----EXECUÇÃO AUTOMATICA-----", "");
+                    clearTextBox();
+                    GravaConfig(Serv);
+                    ComparaTempo(Serv);
+                }
             }
-            else return false;
+            catch (Exception) { };
         }
 
         #endregion
@@ -108,6 +114,7 @@ namespace ProdanSSH
             Config.Default.user = Serv.user;
             Config.Default.pass = Serv.pass;
             Config.Default.Save();
+            CriaHistorico(null, "-----CONFIGURAÇÕES SALVAS-----", "");
         }
 
         /// <summary>
@@ -173,9 +180,12 @@ namespace ProdanSSH
                     Serv.pass = Config.Default.pass;
                     Serv.rootpass = Config.Default.rootpass;
                 }
-                if (Serv.host.Equals(string.Empty) && Serv.user.Equals(string.Empty) && Serv.pass.Equals(string.Empty)) // se não tem nada nos campos, nem no arq config
+                if (Serv.host.Equals(string.Empty) || Serv.user.Equals(string.Empty) || Serv.pass.Equals(string.Empty)) // se não tem nada nos campos, nem no arq config
                 {
-                    MessageBox.Show("Nenhum servidor foi especificado.", "Dados de conexão", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    if (!auto)
+                    {
+                        MessageBox.Show("Informe todos os dados para conexão ao servidor.", "Dados de conexão", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                     throw new Exception();
                     //Serv = TryDefault(); 
                 }
@@ -197,7 +207,7 @@ namespace ProdanSSH
         public Servidor TryDefault()
         {
             Servidor Serv = new Servidor();
-            Output("Não há nenhum servidor informado.\nBuscando dados por osmose, aguarde por favor...\n\n\n", true);
+            Output("Não há nenhum servidor informado.\nBuscando dados do servidor no ODBC, aguarde por favor...\n\n\n", true);
             Serv.host = GetServerAdress();
             Serv.user = "root";
             Serv.pass = "prodan46"; //não mudem a senha padrão
@@ -205,6 +215,7 @@ namespace ProdanSSH
             {
                 Thread.Sleep(1398);
                 Output("Conectado em " + Serv.host + Environment.NewLine + Environment.NewLine, true);
+                CriaHistorico(null, "-----SERVIDOR CONFIGURADO VIA ODBC-----", "");
                 GravaConfig(Serv);
                 LeConfig();
                 return Serv;
@@ -266,9 +277,21 @@ namespace ProdanSSH
                     client.Disconnect();
                     client.Dispose();
 
-                    if (!string.IsNullOrEmpty(result)) return result; // se o comando gerou resultado retorna o resultado
-                    else if (!string.IsNullOrEmpty(error)) return error; // senão retorna o erro
-                    else return null; // se não gerou nada retorna nulo
+                    if (!string.IsNullOrEmpty(result))
+                    {
+                        CriaHistorico(Serv, input, result);
+                        return result; // se o comando gerou resultado retorna o resultado
+                    }
+                    else if (!string.IsNullOrEmpty(error))
+                    {
+                        CriaHistorico(Serv, input, error);
+                        return error; // senão retorna o erro
+                    }
+                    else
+                    {
+                        CriaHistorico(Serv, input, "--comando não retornou resultado--");
+                        return null; // se não gerou nada retorna nulo
+                    }
                 }
                 else throw new Exception();
             }
@@ -325,6 +348,7 @@ namespace ProdanSSH
 
                 rep = shellStream.Expect(new Regex(@"([$#])"));
                 Output(rep + Environment.NewLine + Environment.NewLine, true); // imprime o fluxo de dados
+                CriaHistorico(Serv, input, rep);
                 return rep;
 
             }
@@ -442,7 +466,7 @@ namespace ProdanSSH
                         var result = Comando(Serv, cmd);
                         if (!result.Equals(null))
                         {
-                            Comando(Serv, "hwclock -w");
+                            ComandoRoot(Serv, "hwclock -w");
                             Output("Horário do linux alterado para\n" + result.ToString().TrimEnd() + Environment.NewLine + Environment.NewLine, true);
                         }
                         return result;
@@ -886,12 +910,13 @@ namespace ProdanSSH
                 RegistryKey remove = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
                 remove.DeleteValue("Servidor Linux", false);
                 Thread cls = new Thread(new ThreadStart(this.Clear));
-                cls.Start();                
+                cls.Start();
+                CriaHistorico(null, "-----CONFIGURAÇÕES EXCLUÍDAS-----", "");
                 return true;
             }
             if (keyData == Keys.F1) //help na tela
             {
-                Output("-----------------------------------------------------------------------------------------\n\nProdanSSH - Nilton Toffoli - HELP\n\nProjeto no GitHub: https://github.com/niltoffoli/SSH\n\n-----------------------------------------------------------------------------------------\n\n                    Configurações:\n\nAs configurações ficam salvas automaticamente após a primeira conexão válida.\n\n- Host: Endereço IP do servidor.\n- Usuário: Usuário para acesso ao linux\n- Senha: Senha do usuário do linux.\n- Verificar horario na inicialização: Inicia programa com o Windows e faz a verificação\n- F2: Limpa a tela.\n- F3: Busca dados do servior do ODBC.\n- CTRL+F12: Limpa todas as configurações.\n\n                    Funções:\n\n- Verificar Horário: Busca o horário atual na internet e compara com a data/hora do servidor. Altera automaticamente se estiver fora da tolerância de 1 min.\n- Lista Processos: Dispara o comando 'ps -ax' e lista os processos do servidor.\n- Matar Processo: Finaliza Processos (digite o PID do processo e tecle ENTER).\n- Reiniciar Postgres: Dispara o comando para reiniciar o Postgres.\n- Reinciar Servidor: Dispara o comando 'reboot' e reinciar o servidor.\n- PuTTY: Executa e conecta o PuTTY no servidor expecificado. Faz o download automático do PuTTY se esse não for encontrado.\n\n-----------------------------------------------------------------------------------------\n\n\n        Limpa Tela\n\n            |\n            |\n            |", false);
+                Output("-----------------------------------------------------------------------------------------\n\nProdanSSH - HELP\n\n-----------------------------------------------------------------------------------------\n\n                    Configurações:\n\nAs configurações ficam salvas automaticamente após a primeira conexão válida.\n\n- Host: Endereço IP do servidor.\n- Usuário: Usuário para acesso ao linux\n- Senha: Senha do usuário do linux.\n- Verificar horario na inicialização: Inicia programa com o Windows e faz a verificação\n- F2: Limpa a tela.\n- F3: Busca dados do servidor pelo ODBC.\n- F5: Histórico de Comandos.\n- CTRL+F12: Limpa todas as configurações.\n\n                    Funções:\n\n- Verificar Horário: Busca o horário atual na internet e compara com a data/hora do servidor. Altera automaticamente se estiver fora da tolerância de 1 min.\n- Lista Processos: Dispara o comando 'ps -ax' e lista os processos do servidor.\n- Matar Processo: Finaliza Processos (digite o PID do processo e tecle ENTER).\n- Reiniciar Postgres: Dispara o comando para reiniciar o Postgres.\n- Reinciar Servidor: Dispara o comando 'reboot' e reincia o servidor.\n- PuTTY: Executa e conecta o PuTTY no servidor expecificado. Faz o download automático do PuTTY se esse não for encontrado.\n\n-----------------------------------------------------------------------------------------\n\n\n        Limpa Tela\n\n            |\n            |\n            |", false);
                 return true;
             }
             if (keyData == Keys.F2) //limpa o texto
@@ -901,6 +926,10 @@ namespace ProdanSSH
             if (keyData == Keys.F3) //busca dados do odbc
             {
                 TryDefault();
+            }
+            if (keyData == Keys.F5) //historico
+            {
+                CarregaHistorico();
             }
             return base.ProcessCmdKey(ref msg, keyData);
         }
@@ -923,6 +952,24 @@ namespace ProdanSSH
         private void copiarToolStripMenuItem_Click(object sender, EventArgs e)
         {
             rtbOutput.Copy();
+        }
+
+        /// <summary>
+        /// Busca o IP da maquina onde está sendo executado
+        /// </summary>
+        /// <returns></returns>
+        private string LocalIPAddress()
+        {
+            if (!System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
+            {
+                return null;
+            }
+
+            IPHostEntry host = Dns.GetHostEntry(Dns.GetHostName());
+
+            return host
+                .AddressList
+                .FirstOrDefault(ip => ip.AddressFamily == AddressFamily.InterNetwork).ToString(); ;
         }
 
         #endregion
@@ -971,14 +1018,114 @@ namespace ProdanSSH
                 toolStripTextBox1.Text = string.Empty;
             }
         }
-       
+
+        #endregion
+
+        #region Histórico
+
+        string xmlfile = Application.StartupPath + "\\sshlog.xml";
+        /// <summary>
+        /// Grava o log de comandos em um arquivo xml
+        /// </summary>
+        /// <param name="Serv"></param>
+        /// <param name="comando"></param>
+        /// <param name="result"></param>
+        public void CriaHistorico(Servidor Serv, string comando, string result)
+        {
+
+            try
+            {
+                string ip = LocalIPAddress();
+                if (File.Exists(xmlfile) && File.GetCreationTime(xmlfile) < DateTime.Now.AddMonths(-3)) { File.Delete(xmlfile); }
+
+                if (!File.Exists(xmlfile))
+                {
+                    XmlWriterSettings configxml = new XmlWriterSettings();
+                    configxml.Indent = true;
+                    configxml.NewLineOnAttributes = true;
+                    configxml.Encoding = Encoding.UTF8;
+                    configxml.CheckCharacters = true;
+                    using (XmlWriter xmlWriter = XmlWriter.Create(xmlfile, configxml))
+                    {
+                        xmlWriter.WriteStartDocument();
+                        xmlWriter.WriteStartElement("root");
+                        xmlWriter.WriteStartElement("DADOS_COMANDO");
+                        xmlWriter.WriteElementString("Data", (DateTime.Now.ToString("dd-MM-yyyy")));
+                        xmlWriter.WriteElementString("Hora", (DateTime.Now.ToShortTimeString()));
+                        xmlWriter.WriteElementString("Servidor", Serv == null ? null : Serv.host.ToString());
+                        xmlWriter.WriteElementString("Usuário", Serv == null ? null : Serv.user.ToString());
+                        xmlWriter.WriteElementString("IP_Terminal", ip);
+                        xmlWriter.WriteElementString("Comando", comando);
+                        xmlWriter.WriteElementString("Resultado", result.Replace("\a", ""));
+                        xmlWriter.WriteEndElement();
+                        xmlWriter.WriteEndElement();
+                        xmlWriter.WriteEndDocument();
+                        xmlWriter.Flush();
+                        xmlWriter.Close();
+                    }
+                }
+                else
+                {
+                    XDocument xDocument = XDocument.Load(xmlfile);
+                    XElement root = xDocument.Element("root");
+                    IEnumerable<XElement> rows = root.Descendants("DADOS_COMANDO");
+                    XElement firstRow = rows.First();
+                    firstRow.AddBeforeSelf(
+                       new XElement("DADOS_COMANDO",
+                       new XElement("Data", (DateTime.Now.ToString("dd-MM-yyyy"))),
+                       new XElement("Hora", (DateTime.Now.ToShortTimeString())),
+                       new XElement("Servidor", Serv == null ? null : Serv.host.ToString()),
+                       new XElement("Usuário", Serv == null ? null : Serv.user.ToString()),
+                       new XElement("IP_Terminal", ip),
+                       new XElement("Comando", comando),
+                       new XElement("Resultado", result.Replace("\a",""))));
+                    xDocument.Save(xmlfile);
+                }
+            }
+            catch (Exception exc) { }
+        }
+
+        /// <summary>
+        /// Lê o arquivo xml e mostra o log na richtextbox
+        /// </summary>
+        private void CarregaHistorico()
+        {
+            try
+            {
+                XmlDocument document = new XmlDocument();
+                document.Load(xmlfile);
+                XmlNodeList nodes = document.SelectNodes("/root/DADOS_COMANDO");
+
+                foreach (XmlNode item in nodes)
+                {
+                    XmlNode node = item.SelectSingleNode("Servidor");
+                    string server = node != null ? node.InnerText : "";
+                    node = item.SelectSingleNode("Data");
+                    string data = node != null ? node.InnerText : "";
+                    node = item.SelectSingleNode("Hora");
+                    string hora = node != null ? node.InnerText : "";
+                    node = item.SelectSingleNode("Usuário");
+                    string user = node != null ? node.InnerText : "";
+                    node = item.SelectSingleNode("IP_Terminal");
+                    string ip = node != null ? node.InnerText : "";
+                    node = item.SelectSingleNode("Comando");
+                    string cmd = node != null ? node.InnerText : "";
+                    node = item.SelectSingleNode("Resultado");
+                    string res = node != null ? node.InnerText : "";
+                    DateTime date = Convert.ToDateTime(data);
+
+                    Output(string.Format("{0}\n{1}  {2}\n{3} @ {4}\n{5}\n{6}\n\n\n", server, data, hora, user, ip, cmd, res), false);
+                }
+            }
+            catch (Exception) { }
+        }
+
         #endregion
 
         // delegate para imprimir mensagens na rich text via thread secundária
         delegate void SetTextCallback(string text, bool scroll);
         //delegate para limpar a rich text via threads
         delegate void ClearTextCallback();
-
 
     }
 }

@@ -42,6 +42,8 @@
             this.sairToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.checkVerify = new System.Windows.Forms.CheckBox();
             this.rtbOutput = new System.Windows.Forms.RichTextBox();
+            this.contextRtbOutput = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.copiarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.contextProcKill = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.toolStripTextBox1 = new System.Windows.Forms.ToolStripTextBox();
@@ -56,19 +58,17 @@
             this.contextProcList = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.todosOsProcessosToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.somentePostgresToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.contextRtbOutput = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.copiarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox1.SuspendLayout();
             this.contextBandeja.SuspendLayout();
+            this.contextRtbOutput.SuspendLayout();
             this.contextProcKill.SuspendLayout();
             this.contextProcList.SuspendLayout();
-            this.contextRtbOutput.SuspendLayout();
             this.SuspendLayout();
             // 
             // textIP
             // 
             this.textIP.BackColor = System.Drawing.Color.FloralWhite;
-            this.textIP.Location = new System.Drawing.Point(4, 32);
+            this.textIP.Location = new System.Drawing.Point(4, 39);
             this.textIP.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.textIP.Name = "textIP";
             this.textIP.Size = new System.Drawing.Size(95, 20);
@@ -78,7 +78,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(1, 17);
+            this.label1.Location = new System.Drawing.Point(1, 24);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(17, 13);
             this.label1.TabIndex = 0;
@@ -87,7 +87,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(102, 17);
+            this.label3.Location = new System.Drawing.Point(102, 24);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(43, 13);
             this.label3.TabIndex = 3;
@@ -96,7 +96,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(208, 17);
+            this.label4.Location = new System.Drawing.Point(208, 24);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(77, 13);
             this.label4.TabIndex = 5;
@@ -105,7 +105,7 @@
             // textUser
             // 
             this.textUser.BackColor = System.Drawing.Color.FloralWhite;
-            this.textUser.Location = new System.Drawing.Point(105, 32);
+            this.textUser.Location = new System.Drawing.Point(105, 39);
             this.textUser.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.textUser.Name = "textUser";
             this.textUser.Size = new System.Drawing.Size(100, 20);
@@ -114,7 +114,7 @@
             // textPass
             // 
             this.textPass.BackColor = System.Drawing.Color.FloralWhite;
-            this.textPass.Location = new System.Drawing.Point(211, 32);
+            this.textPass.Location = new System.Drawing.Point(211, 39);
             this.textPass.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.textPass.Name = "textPass";
             this.textPass.Size = new System.Drawing.Size(104, 20);
@@ -135,6 +135,7 @@
             this.groupBox1.Size = new System.Drawing.Size(335, 79);
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Servidor";
             // 
             // tray
             // 
@@ -162,7 +163,7 @@
             // 
             this.checkVerify.AutoSize = true;
             this.checkVerify.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.checkVerify.Location = new System.Drawing.Point(479, 344);
+            this.checkVerify.Location = new System.Drawing.Point(479, 357);
             this.checkVerify.Name = "checkVerify";
             this.checkVerify.Size = new System.Drawing.Size(174, 17);
             this.checkVerify.TabIndex = 8;
@@ -180,17 +181,31 @@
             this.rtbOutput.Location = new System.Drawing.Point(8, 90);
             this.rtbOutput.Name = "rtbOutput";
             this.rtbOutput.ReadOnly = true;
-            this.rtbOutput.Size = new System.Drawing.Size(645, 242);
+            this.rtbOutput.Size = new System.Drawing.Size(645, 255);
             this.rtbOutput.TabIndex = 0;
             this.rtbOutput.TabStop = false;
             this.rtbOutput.Text = "";
             this.rtbOutput.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(this.rtbOutput_LinkClicked);
             // 
+            // contextRtbOutput
+            // 
+            this.contextRtbOutput.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.copiarToolStripMenuItem});
+            this.contextRtbOutput.Name = "contextRtbOutput";
+            this.contextRtbOutput.Size = new System.Drawing.Size(110, 26);
+            // 
+            // copiarToolStripMenuItem
+            // 
+            this.copiarToolStripMenuItem.Name = "copiarToolStripMenuItem";
+            this.copiarToolStripMenuItem.Size = new System.Drawing.Size(109, 22);
+            this.copiarToolStripMenuItem.Text = "Copiar";
+            this.copiarToolStripMenuItem.Click += new System.EventHandler(this.copiarToolStripMenuItem_Click);
+            // 
             // progressBar1
             // 
             this.progressBar1.BackColor = System.Drawing.Color.Snow;
             this.progressBar1.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.progressBar1.Location = new System.Drawing.Point(8, 370);
+            this.progressBar1.Location = new System.Drawing.Point(8, 383);
             this.progressBar1.Name = "progressBar1";
             this.progressBar1.Size = new System.Drawing.Size(645, 10);
             this.progressBar1.TabIndex = 13;
@@ -281,7 +296,7 @@
             // btnLimpa
             // 
             this.btnLimpa.Image = global::ProdanSSH.Properties.Resources._1492562768_edit_clear;
-            this.btnLimpa.Location = new System.Drawing.Point(80, 338);
+            this.btnLimpa.Location = new System.Drawing.Point(80, 351);
             this.btnLimpa.Name = "btnLimpa";
             this.btnLimpa.Size = new System.Drawing.Size(27, 26);
             this.btnLimpa.TabIndex = 9;
@@ -308,7 +323,7 @@
             // 
             this.btnPutty.Image = global::ProdanSSH.Properties.Resources.putty;
             this.btnPutty.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnPutty.Location = new System.Drawing.Point(8, 338);
+            this.btnPutty.Location = new System.Drawing.Point(8, 351);
             this.btnPutty.Name = "btnPutty";
             this.btnPutty.Size = new System.Drawing.Size(66, 26);
             this.btnPutty.TabIndex = 10;
@@ -321,7 +336,7 @@
             // 
             this.lblHelp.AutoSize = true;
             this.lblHelp.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblHelp.Location = new System.Drawing.Point(750, 370);
+            this.lblHelp.Location = new System.Drawing.Point(750, 383);
             this.lblHelp.Name = "lblHelp";
             this.lblHelp.Size = new System.Drawing.Size(45, 12);
             this.lblHelp.TabIndex = 15;
@@ -349,27 +364,13 @@
             this.somentePostgresToolStripMenuItem.Text = "Somente Postgres";
             this.somentePostgresToolStripMenuItem.Click += new System.EventHandler(this.somentePostgresToolStripMenuItem_Click);
             // 
-            // contextRtbOutput
-            // 
-            this.contextRtbOutput.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.copiarToolStripMenuItem});
-            this.contextRtbOutput.Name = "contextRtbOutput";
-            this.contextRtbOutput.Size = new System.Drawing.Size(153, 48);
-            // 
-            // copiarToolStripMenuItem
-            // 
-            this.copiarToolStripMenuItem.Name = "copiarToolStripMenuItem";
-            this.copiarToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.copiarToolStripMenuItem.Text = "Copiar";
-            this.copiarToolStripMenuItem.Click += new System.EventHandler(this.copiarToolStripMenuItem_Click);
-            // 
             // FrmSSH
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Snow;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.ClientSize = new System.Drawing.Size(799, 384);
+            this.ClientSize = new System.Drawing.Size(799, 401);
             this.Controls.Add(this.lblHelp);
             this.Controls.Add(this.btnPgReset);
             this.Controls.Add(this.btnShootToKill);
@@ -393,10 +394,10 @@
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.contextBandeja.ResumeLayout(false);
+            this.contextRtbOutput.ResumeLayout(false);
             this.contextProcKill.ResumeLayout(false);
             this.contextProcKill.PerformLayout();
             this.contextProcList.ResumeLayout(false);
-            this.contextRtbOutput.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
